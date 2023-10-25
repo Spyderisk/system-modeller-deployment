@@ -15,12 +15,14 @@ This project orchestrates:
   endpoints:
 
   * /system-modeller -> /system-modeller on the `ssm` container;
+  * /system-modeller/adaptor -> /system-modeller/adaptor on the `adaptor` container;
   * /auth -> /auth on the `keycloak` container;
   * /documentation -> the documentation website.
 
 * the system-modeller (`ssm` container);
 * Keycloak
 * MongoDB
+* SSM-Adaptor
 
 The orchestration is defined in a `docker-compose.yml` file.
 
@@ -35,6 +37,7 @@ relevant section [below](#Deployment using an external keycloak service).
 General method:
 
 1. Edit the `.env` file to set appropriate values.
+1. Edit the `.env_adaptor` file to set appropriate values.
 2. `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
 3. `docker-compose up -d` to start the containers.
@@ -254,6 +257,7 @@ Stopping system-modeller-deployment_proxy_1    ... done
 Stopping system-modeller-deployment_ssm_1      ... done
 Stopping system-modeller-deployment_mongo_1    ... done
 Stopping system-modeller-deployment_keycloak_1 ... done
+Stopping ssm-adaptor                           ... done
 ```
 
 3. Remove the SSM container (using the name from the list in the previous

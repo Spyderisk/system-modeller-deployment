@@ -22,6 +22,7 @@ services:
     restart: on-failure
     depends_on:
       - ssm
+      - ssm-adaptor
     entrypoint: /tmp/import/entrypoint_no_kc.sh
     volumes:
       - type: bind
@@ -77,6 +78,19 @@ services:
         target: /data/configdb
     networks:
       - smd_net
+
+  ssm-adaptor:
+    image: spyderisk/system-modeller-adaptor:${SPYDERISK_ADAPTOR_VERSION}
+    container_name: ssm-adaptor
+    command: 'gunicorn -b 0.0.0.0:8000 -t 0 -w 4 -k uvicorn.workers.UvicornWorker app.main:app'
+    env_file:
+      - .env_adaptor
+    ports:
+      - '17643:8000'
+    networks:
+      - smd_net
+    depends_on:
+      - mongo
 
 networks:
   smd_net:
