@@ -1,9 +1,9 @@
-# SPYDERISK System Modeller Deployment Project
+# Spyderisk System Modeller Deployment Project
 
 ## Overview
 
 The purpose of this project is to provide a configured system that can deploy
-the dockerised SPYDERISK software on a server along with keycloak and mongo
+the dockerised Spyderisk software on a server along with keycloak and mongo
 containers.
 
 The deployment would be with `docker-compose` executed directly on the server
@@ -46,7 +46,7 @@ See below for details.
 
 ### Deployment on a Laptop
 
-The SPYDERISK software must be configured so that there is a single URL used to
+The Spyderisk software must be configured so that there is a single URL used to
 access Keycloak. The `docker-compose.yml` file sets the address to be
 `${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/`.
 
@@ -110,7 +110,7 @@ compose file, e.g. `docker-compose -f docker-compose_external_kc.yml up -d`.
 Multiple deployments of the dockerised SSM can co-exist on the same server.
 Each deployment requires its own folder, and adjusted PORT settings.
 
-- copy the system-modeller-deployment to a folder with a different name e.g. `security1a`
+- copy the system-modeller-deployment to a folder with a different name e.g. `security1`
 - edit `.env` and use different names values for:
   - update `SERVICE_DOMAIN` to a different name than the first deployment SERVICE_DOMAIN
   - update `PROXY_EXTERNAL_PORT` to a different value than the first deployment PROXY_EXTERNAL_PORT
