@@ -7,7 +7,6 @@ services:
   proxy:
     image: nginx:stable-alpine3.17
     # If there are multiple deployments of the SSM on the same host then they each need to expose a different PROXY_EXTERNAL_PORT
-    container_name: ssm-proxy
     ports:
       - ${PROXY_EXTERNAL_PORT}:80
     expose:
@@ -24,7 +23,7 @@ services:
     depends_on:
       - ssm
       - keycloak
-      - ssm-adaptor
+      - adaptor
     entrypoint: /tmp/import/entrypoint.sh
     volumes:
       - type: bind
@@ -35,7 +34,6 @@ services:
 
   ssm:
     image: spyderisk/system-modeller:${SPYDERISK_VERSION}
-    container_name: ssm
     restart: on-failure
     environment:
       # The "SPRING" env variables override the values in application.properties
@@ -93,7 +91,6 @@ services:
 
   mongo:
     image: mongo:5.0.16-focal
-    container_name: mongo
     restart: on-failure
     volumes:
       - type: volume
@@ -105,9 +102,8 @@ services:
     networks:
       - smd_net
 
-  ssm-adaptor:
+  adaptor:
     image: spyderisk/system-modeller-adaptor:${SPYDERISK_ADAPTOR_VERSION}
-    container_name: ssm-adaptor
     command: 'gunicorn -b 0.0.0.0:8000 -t 0 -w 4 -k uvicorn.workers.UvicornWorker app.main:app'
     env_file:
       - .env_adaptor

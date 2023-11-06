@@ -38,9 +38,11 @@ General method:
 
 1. Edit the `.env` file to set appropriate values.
 1. Edit the `.env_adaptor` file to set appropriate values.
-2. `docker-compose pull` to get the latest images (otherwise the locally cached
+3. Download the most recent [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148)
+   e.g. `domain-network-6a3-2-2.zip` and paste it into the `knowledgebases` folder.
+2. Run `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
-3. `docker-compose up -d` to start the containers.
+4. Run `docker-compose up -d` to start the containers.
 
 See below for details.
 
@@ -208,10 +210,11 @@ docker-compose ps
 
        Name                     Command               State          Ports
 ----------------------------------------------------------------------------------
-example_keycloak_1   /opt/jboss/tools/docker-en ...   Up      8080/tcp, 8443/tcp
-example_mongo_1      docker-entrypoint.sh mongod      Up      27017/tcp
-example_proxy_1      /docker-entrypoint.sh /bin ...   Up      0.0.0.0:8083->80/tcp
-example_ssm_1        /var/lib/tomcat/bin/catali ...   Up
+example_adaptor_1    gunicorn -b 0.0.0.0:8000 - ...   Up                                                 
+example_keycloak_1   /tmp/import/entrypoint.sh        Up (healthy)   8080/tcp, 8443/tcp                  
+example_mongo_1      docker-entrypoint.sh mongod      Up             27017/tcp                           
+example_proxy_1      /tmp/import/entrypoint_tra ...   Up             0.0.0.0:8086->80/tcp,:::8086->80/tcp
+example_ssm_1        /var/lib/tomcat/bin/catali ...   Up                                                 
 ```
 
 The use, e.g.:
