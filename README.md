@@ -39,7 +39,7 @@ General method:
 1. Edit the `.env` file to set appropriate values.
 1. Edit the `.env_adaptor` file to set appropriate values.
 3. Download the most recent [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148)
-   e.g. `domain-network-6a3-2-2.zip` and paste it into the `knowledgebases` folder.
+   e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
 2. Run `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
 4. Run `docker-compose up -d` to start the containers.
