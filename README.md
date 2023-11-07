@@ -280,11 +280,10 @@ docker ps -q | xargs docker stats
 
 It is sometimes possible to upgrade the SSM container in a deployment while
 keeping the user accounts and system models. This will only work if the new SSM
-software is compatible with the databases of the previous version. (TODO: if
-the domain models in the SSM change, what happens?)
+software is compatible with the databases of the previous version.
 
 1. Go to the deployment's folder.
-1. Stop all the containers in the deployment:
+2. Stop all the containers in the deployment:
 
 ```shell
 $ docker-compose stop
