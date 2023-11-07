@@ -41,6 +41,13 @@ http {
         # For each endpoint, we are explicit about how to treat URLs without a trailing slash. Not doing this causes some hidden problems.
         # $scheme and $http_host come from the request URL and are e.g. "https" and "some.domain:port". They are needed to preserve this part of the URL.
 
+        location /system-modeller/adaptor {
+            rewrite ^(.*)$ http://$http_host$1/ redirect;
+        }
+        location /system-modeller/adaptor/ {
+            proxy_pass http://adaptor:8000/;
+        }
+
         location / {
             return 301 $scheme://$http_host/system-modeller/;
         }

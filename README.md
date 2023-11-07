@@ -1,9 +1,9 @@
-# SPYDERISK System Modeller Deployment Project
+# Spyderisk System Modeller Deployment Project
 
 ## Overview
 
 The purpose of this project is to provide a configured system that can deploy
-the dockerised SPYDERISK software on a server along with keycloak and mongo
+the dockerised Spyderisk software on a server along with keycloak and mongo
 containers.
 
 The deployment would be with `docker-compose` executed directly on the server
@@ -15,12 +15,14 @@ This project orchestrates:
   endpoints:
 
   * /system-modeller -> /system-modeller on the `ssm` container;
+  * /system-modeller/adaptor -> /system-modeller/adaptor on the `adaptor` container;
   * /auth -> /auth on the `keycloak` container;
   * /documentation -> the documentation website.
 
 * the system-modeller (`ssm` container);
 * Keycloak
 * MongoDB
+* SSM-Adaptor
 
 The orchestration is defined in a `docker-compose.yml` file.
 
@@ -35,15 +37,18 @@ relevant section [below](#Deployment using an external keycloak service).
 General method:
 
 1. Edit the `.env` file to set appropriate values.
-2. `docker-compose pull` to get the latest images (otherwise the locally cached
+1. Edit the `.env_adaptor` file to set appropriate values.
+3. Download the most recent [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148)
+   e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
+2. Run `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
-3. `docker-compose up -d` to start the containers.
+4. Run `docker-compose up -d` to start the containers.
 
 See below for details.
 
 ### Deployment on a Laptop
 
-The SPYDERISK software must be configured so that there is a single URL used to
+The Spyderisk software must be configured so that there is a single URL used to
 access Keycloak. The `docker-compose.yml` file sets the address to be
 `${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/`.
 
@@ -107,7 +112,7 @@ compose file, e.g. `docker-compose -f docker-compose_external_kc.yml up -d`.
 Multiple deployments of the dockerised SSM can co-exist on the same server.
 Each deployment requires its own folder, and adjusted PORT settings.
 
-- copy the system-modeller-deployment to a folder with a different name e.g. `security1a`
+- copy the system-modeller-deployment to a folder with a different name e.g. `security1`
 - edit `.env` and use different names values for:
   - update `SERVICE_DOMAIN` to a different name than the first deployment SERVICE_DOMAIN
   - update `PROXY_EXTERNAL_PORT` to a different value than the first deployment PROXY_EXTERNAL_PORT
@@ -205,10 +210,11 @@ docker-compose ps
 
        Name                     Command               State          Ports
 ----------------------------------------------------------------------------------
-example_keycloak_1   /opt/jboss/tools/docker-en ...   Up      8080/tcp, 8443/tcp
-example_mongo_1      docker-entrypoint.sh mongod      Up      27017/tcp
-example_proxy_1      /docker-entrypoint.sh /bin ...   Up      0.0.0.0:8083->80/tcp
-example_ssm_1        /var/lib/tomcat/bin/catali ...   Up
+example_adaptor_1    gunicorn -b 0.0.0.0:8000 - ...   Up                                                 
+example_keycloak_1   /tmp/import/entrypoint.sh        Up (healthy)   8080/tcp, 8443/tcp                  
+example_mongo_1      docker-entrypoint.sh mongod      Up             27017/tcp                           
+example_proxy_1      /tmp/import/entrypoint_tra ...   Up             0.0.0.0:8086->80/tcp,:::8086->80/tcp
+example_ssm_1        /var/lib/tomcat/bin/catali ...   Up                                                 
 ```
 
 The use, e.g.:
@@ -254,6 +260,7 @@ Stopping system-modeller-deployment_proxy_1    ... done
 Stopping system-modeller-deployment_ssm_1      ... done
 Stopping system-modeller-deployment_mongo_1    ... done
 Stopping system-modeller-deployment_keycloak_1 ... done
+Stopping system-modeller-deployment_adaptor    ... done
 ```
 
 3. Remove the SSM container (using the name from the list in the previous
