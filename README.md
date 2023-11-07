@@ -260,7 +260,7 @@ Stopping system-modeller-deployment_proxy_1    ... done
 Stopping system-modeller-deployment_ssm_1      ... done
 Stopping system-modeller-deployment_mongo_1    ... done
 Stopping system-modeller-deployment_keycloak_1 ... done
-Stopping ssm-adaptor                           ... done
+Stopping system-modeller-deployment_adaptor    ... done
 ```
 
 3. Remove the SSM container (using the name from the list in the previous
