@@ -2,16 +2,14 @@
 
 ## Overview
 
-The purpose of this project is to provide a configured system that can deploy
-the dockerised Spyderisk software on a server along with keycloak and mongo
-containers.
+The purpose of this project is to deploy the [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a server.
 
-The deployment would be with `docker-compose` executed directly on the server
-or remotely via `docker machine`.
+The deployment is made with `docker-compose` executed directly on the server
+(or remotely via `docker machine`).
 
 This project orchestrates:
 
-* a reverse proxy (in the `proxy` container) which configures the following
+* A reverse proxy (in the `proxy` container) which configures the following
   endpoints:
 
   * /system-modeller -> /system-modeller on the `ssm` container;
@@ -19,18 +17,22 @@ This project orchestrates:
   * /auth -> /auth on the `keycloak` container;
   * /documentation -> the documentation website.
 
-* the system-modeller (`ssm` container);
-* Keycloak
+* [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) (`ssm` container)
+* [System Modeller Adaptor](https://github.com/Spyderisk/system-modeller-adaptor) (`ssm-adaptor` container)
 * MongoDB
-* SSM-Adaptor
+* Keycloak (optional)
 
-The orchestration is defined in a `docker-compose.yml` file.
+Two orchestration definitions are provided:
 
-Of the four containers, the only one configured to expose any ports outside of
-the docker network is `nginx`.
+* `docker-compose.yml` which deploys a default insecure Keycloak service
+* `docker-compose_external_kc.yml` which links to an external Keycloak service
 
-The deployment can also work with an existing external keycloak service, see
-relevant section [below](#Deployment using an external keycloak service).
+Of the containers, the only one configured to expose any ports outside of
+the docker network is `proxy`.
+
+## Prerequisites
+
+[Docker](https://www.docker.com/) is required to orchestrate the containers. Docker is available on various host operating systems, but we recommend using some form of Linux. If you want to run the sotware on Windows or Mac, you may use [Docker Desktop](https://www.docker.com/products/docker-desktop/) (with WSL if on Windows) if the licence is appropriate.
 
 ## Deployment
 
@@ -38,92 +40,86 @@ General method:
 
 1. Edit the `.env` file to set appropriate values.
 1. Edit the `.env_adaptor` file to set appropriate values.
-3. Download the most recent [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148)
+3. Download a [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
    e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
 2. Run `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
-4. Run `docker-compose up -d` to start the containers.
+4. Run `docker-compose up -d` or `docker-compose -f docker-compose_external_kc.yml up -d` to start the containers.
 
 See below for details.
 
-### Deployment on a Laptop
+### Keycloak
 
-The Spyderisk software must be configured so that there is a single URL used to
-access Keycloak. The `docker-compose.yml` file sets the address to be
-`${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/`.
+The Spyderisk System Modeller uses Keycloak to authenticate users. The `docker-compose.yml` script will create an insecure Keycloak container for testing, preconfigured with a Keycloak `admin` account, and Spyderisk `testuser` and `testadmin` accounts, all using `password` as the password. For a production system you should configure Spyderisk to connect to a secure external Keycloak service and launch the software using the `docker-compose_external_kc.yml` file.
 
-This URL must work (a) from the `ssm` container and (b) from the web browser of
-a user. On Windows (using Docker Desktop) an appropriate hostname for
-`SERVICE_DOMAIN` is `host.docker.internal` which Docker Desktop automatically
-inserts into the Windows `hosts` file (`C:\Windows\System32\drivers\etc\hosts`)
-to point at the docker host IP address. For Linux there is no equivalent
-`host.docker.internal` entry in the `hosts` file (`/etc/hosts`), so it has to
-be added manually, e.g. `<ip address of docker gateway> host.docker.internal`,
-the default docker gateway is `172.17.0.1`.
+To communicate securely, the Spyderisk System Modeller and Keycloak must be configured with a shared secret. This secret is defined in the `KEYCLOAK_CREDENTIALS_SECRET` variable in the `.env` file and is inserted into the `ssm` container (and into the optional insecure `keycloak` container).
 
-An alternative is to manually edit the `hosts` file to add in a made-up FQDN e.g.
-`spyderisk.example.com` and use that as the `SERVICE_DOMAIN` domain name.
+To use an external Keycloak service, edit the `.env` file and update:
 
-To start the service:
+* `EXTERNAL_KEYCLOAK_AUTH_SERVER_URL`
+* `KEYCLOAK_CREDENTIALS_SECRET`
 
-```shell
-docker-compose up
-```
+When configuring an external Keycloak, the suggested configuration is:
 
-The port exposed to the host machine is by default 8089 but this can be
-changed by editing value of `PROXY_EXTERNAL_PORT` in the `.env` file.
-
-When the service is running, access e.g. <http://host.docker.internal:8089/system-modeller> in your web browser.
+* Create a realm called `ssm-realm`
+  * Set the "display name" to "SPYDERISK"
+  * Set the "HTML display name" to `SPYDE<b>RISK</b>`
+* Create a client called "system-modeller", with options:
+  * client authentication: on
+  * standard flow: enabled
+  * service accounts roles: enabled
+* Service account roles:
+  * account: manage-account, view-profile, manage-account-links
+  * realm-management: manage-users, query-groups, query-users, view-users
+  * other: admin, user
+  * defaults: offline_access, uma_authorization, default-roles-ssm-realm
+  * valid redirect URIs: http://* (otherwise it doesn't like http)
+  * credentials:
+    * use "client Id & secret"
+    * client secret defined to be `KEYCLOAK_CREDENTIALS_SECRET` in the `.env` file
+* Users:
+  * Spyderisk administrator:
+    * account: manage-account, view-profile, manage-account-links
+    * realm-management: manage-users, query-groups, query-users, view-users
+    * other: admin, user
+    * defaults: offline_access, uma_authorization, default-roles-ssm-realm
+  * Spyderisk user:
+    * account: manage-account, view-profile, manage-account-links
+    * other: user
+    * defaults: offline_access, uma_authorization, default-roles-ssm-realm
 
 ### Deployment on a Server
 
 Edit `.env` and update `SERVICE_PROTOCOL`, `SERVICE_DOMAIN`, and `SERVICE_PORT`
 values to your organisation's settings.
 
-To start the service:
+To start the service and connect to an external Keycloak:
 
-```shell
-docker-compose up -d
+```sh
+sudo -E docker-compose -f docker-compose_external_kc.yml up -d
 ```
 
-or as normal user with sudo:
+or to connect to an insecure local Keycloak:
 
 ```shell
 sudo -E docker-compose up -d
 ```
 
-### Deployment using an external keycloak service
+#### Multiple Deployments on the same Server
 
-In order to use an external keycloak service we need to know the URL of the
-keycloak auth endpoint, and the relevant shared secret. At this point we also
-assume that realm `ssm-realm` exists in the external keycloak service.
-
-Edit `.env` file and update:
-
-- `EXTERNAL_KEYCLOAK_AUTH_SERVER_URL` variable,
-- `KEYCLOAK_CREDENTIALS_SECRET` variable
-
-Finally, start the service using the `docker-compose_external_kc.yml` docker
-compose file, e.g. `docker-compose -f docker-compose_external_kc.yml up -d`.
-
-
-#### Multiple deployments on the same server
-
-Multiple deployments of the dockerised SSM can co-exist on the same server.
+Multiple deployments of the dockerised Spyderisk System Modeller can co-exist on the same server.
 Each deployment requires its own folder, and adjusted PORT settings.
 
-- copy the system-modeller-deployment to a folder with a different name e.g. `security1`
-- edit `.env` and use different names values for:
-  - update `SERVICE_DOMAIN` to a different name than the first deployment SERVICE_DOMAIN
-  - update `PROXY_EXTERNAL_PORT` to a different value than the first deployment PROXY_EXTERNAL_PORT
-- run `docker-compose pull` (optional step to ensure that the latest images are downloaded)
+* copy the system-modeller-deployment to a folder with a different name e.g. `security1`
+* edit `.env` and use different names values for:
+  * update `SERVICE_DOMAIN` to a different name than the first deployment SERVICE_DOMAIN
+  * update `PROXY_EXTERNAL_PORT` to a different value than the first deployment PROXY_EXTERNAL_PORT
+* run `docker-compose pull` (optional step to ensure that the latest images are downloaded)
 
-Start the second deployment using `docker-compose up -d`. The second SSM
-service can be access/proxied from the port defined by PROXY_EXTERNAL_PORT
-value.
+Start the second deployment with or without a secure Keycloak service as described above. The second
+service can be access/proxied from the port defined by PROXY_EXTERNAL_PORT value.
 
-
-#### Deployment on a test server
+#### Deployment on a Test Server
 
 Sometimes we need to deploy onto a docker host server which does not have an
 FQDN and where we cannot open a public port. In this case we need to invent an
@@ -144,7 +140,8 @@ browser (client machine) to the server:
 3. From the local (client) host, make an SSH tunnel from the local
    `localhost:8089` to `localhost:8089` on the server (in this example, the
    host machine is `fiab.spdns.org` and the SSH port is a non-standard `17248`):
-```
+
+```sh
 ssh -nNT -L 8089:localhost:8089 username@fiab.spdns.org:17248 -v
 ```
 
@@ -165,9 +162,10 @@ contact Keycloak using the FQDN) we need to:
 extra_hosts:
       - "example.com:host-gateway"
 ```
+
 5. Use the same made up FQDN in the `.env` file:
 
-```
+```sh
 SERVICE_DOMAIN=example.com
 ```
 
@@ -179,10 +177,46 @@ and then to Keycloak. Without this the SSM container will try to use the
 `resolv.conf` file from the docker host which passes on to some DNS which does
 not know about the made up FQDN.
 
+### Deployment on a Personal Machine
+
+The software is designed to be deployed on a server which has an externally accessible domain name. It can be made to work on a personal machine but some extra configuration is required.
+
+The Spyderisk software must be configured so that there is a single URL used to
+access Keycloak. The `docker-compose.yml` file sets the address to be
+`${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/`.
+
+This URL must work (a) from the `ssm` container and (b) from the web browser of
+a user. On Windows (using Docker Desktop) an appropriate hostname for
+`SERVICE_DOMAIN` is `host.docker.internal` which Docker Desktop automatically
+inserts into the Windows `hosts` file (`C:\Windows\System32\drivers\etc\hosts`)
+to point at the docker host IP address. For Linux there is no equivalent
+`host.docker.internal` entry in the `hosts` file (`/etc/hosts`), so it has to
+be added manually, e.g. `<ip address of docker gateway> host.docker.internal`,
+the default docker gateway is `172.17.0.1`.
+
+An alternative is to manually edit the `hosts` file to add in your own made-up FQDN e.g.
+`spyderisk.example.com` along with the Docker gateway IP address and use that as the `SERVICE_DOMAIN` domain name.
+
+To start the service with the insecure local Keycloak:
+
+```shell
+docker-compose up -d
+```
+
+or to connect to an external Keycloak:
+
+```sh
+docker-compose -f docker-compose_external_kc.yml up -d
+```
+
+The port exposed to the host machine is by default 8089 but this can be
+changed by editing value of `PROXY_EXTERNAL_PORT` in the `.env` file.
+
+When the service is running, access e.g. <http://host.docker.internal:8089/system-modeller> in your web browser.
 
 ## Inspecting an Existing Deployment
 
-### Accessing the logs
+### Accessing the Logs
 
 From within a deployment's folder, the `docker logs` command can be used to
 inspect the log files:
@@ -198,7 +232,7 @@ docker-compose logs ssm -f
 docker-compose logs ssm -f --tail=100
 ```
 
-### Finding the SSM version
+### Finding the Spyderisk System Modeller Version
 
 To discover what version of the SSM an existing deployment is using, the
 `docker container inspect` command can be used.
@@ -225,11 +259,10 @@ docker container inspect example_ssm_1 | grep 'image.revision'
 ```
 
 The long number is the git commit ID. It can be pasted into the search bar in
-GitLab (for instance) to jump to that specific commit. The build timestamp is
+GitHub (for instance) to jump to that specific commit. The build timestamp is
 also available with the key `org.opencontainers.image.created`.
 
-
-### Monitoring resource usage
+### Monitoring Resource Usage
 
 To see CPU, memory and network usage (one off):
 
@@ -243,8 +276,7 @@ To keep monitoring it (like `top`):
 docker ps -q | xargs docker stats
 ```
 
-
-## Upgrading a deployment
+## Upgrading a Deployment
 
 It is sometimes possible to upgrade the SSM container in a deployment while
 keeping the user accounts and system models. This will only work if the new SSM
@@ -265,11 +297,10 @@ Stopping system-modeller-deployment_adaptor    ... done
 
 3. Remove the SSM container (using the name from the list in the previous
    step): `docker container rm system-modeller-deployment_ssm_1`
-1. The container is created from an underlying image described in the
+4. The container is created from an underlying image described in the
    `docker-compose.yml` file. If the name/tag of the new image is the same as
    the old (for instance if "latest" is being used), then just do `docker-compose
    pull` to update the local image registry. Or, you might want to change the
    image reference in `docker-compose.yml` file to a different SSM image (e.g.
    change "dev" to "master" or change a tagged version).
-1. Bring the system back up again: `docker-compose up -d`
-
+5. Bring the system back up again: `docker-compose up -d`
