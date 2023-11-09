@@ -38,7 +38,8 @@ the list of supported scenarios.
 
 ## Required knowledge
 
-You will need to understand how to install and configure Docker. 
+You will need to understand how to install and configure Docker, and you need to
+understand what Keycloak does.
 
 We do not recommend anyone install a service live on the internet unless they are
 confident in security measures around domain names, IP networking and routing,
@@ -65,7 +66,8 @@ This project orchestrates:
 * [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) (`ssm` container)
 * [System Modeller Adaptor](https://github.com/Spyderisk/system-modeller-adaptor) (`ssm-adaptor` container)
 * [MongoDB](https://www.mongodb.com/) database
-* [Keycloak](https://www.keycloak.org/) which is bundled with Spyderisk and must be used, unless you have existing Keycloak installation
+* [Keycloak](https://www.keycloak.org/) which is bundled with Spyderisk in an insecure configuration and must be used,
+  unless you have an existing production Keycloak installation
 
 Two orchestration definitions are provided:
 
