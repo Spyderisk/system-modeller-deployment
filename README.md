@@ -2,12 +2,18 @@
 
 ## Overview
 
-The purpose of this project is to deploy an instance of the open source
-[Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a
-machine you control, typically a server or a laptop. Being an open source
-project, Spyderisk is primarily written for and targeted to Linux/Unix, but we
-have made some efforts to make it work on Windows too.  As of 2023, Spyderisk
-is of course generally available but only works in very specific circumstances. 
+This project contains scripts and configuration files deploy an instance of the
+open source [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a machine you
+control, typically a server or a laptop. As of the end of 2023, Spyderisk is
+fully available but only works in very specific circumstances. This README file
+documents how to do a Spyderisk deployment in those few circumstances. We are 
+pretty proud of our efforts to bring 12 years of academic research out into the 
+open and we expect it to get increasingly easy to install and run.
+
+Being an open source project which promotes transparency at all levels,
+Spyderisk is primarily written for and targeted to Linux/Unix. We have made
+some efforts to make it work on Windows too, and within strict limits we do
+support Windows users.
 
 The scenarios we explicitly support in this document for installing Spyderisk are:
 
@@ -20,10 +26,10 @@ The scenarios we explicitly support in this document for installing Spyderisk ar
 We explicitly do not expect Spyderisk will work in any of the following scenarios:
 
 * *Mac*. We have not tried installing Spyderisk on any Mac. 
-* *Windows Server*. There are many reasons, including Microsoft decisions
-  about licensing (see below), but mostly we produce risk assessment software and so
-  we would not encourage people to run a Linux server on the internet under Windows
-  Subsystem for Linux. Microsoft doesn't do it and neither should you.
+* *Windows Server*. There are many reasons, including Microsoft's decision to discontinue 
+  the free Hyper V Server product line in January 2022. In addition, Spyderisk is cybersecurity
+  risk assessment, and from our knowledge we do not encourage anyone to run a Linux server on the internet
+  under the Windows Subsystem for Linux. Microsoft does not do it and neither should you.
 * *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
   any desire we have to limit our users' choices.
 
@@ -73,19 +79,27 @@ the docker network is `proxy`.
 
 [Docker](https://www.docker.com/) is required to orchestrate the containers.
 Docker is available on various host operating systems, but we recommend using
-some form of Linux. If you want to run the software on Windows or Mac, you may
-use the closed-source [Docker Desktop](https://www.docker.com/products/docker-desktop/) making sure you
+some form of Linux. For example, on Debian or Ubuntu type `sudo apt install docker`.
+
+If you do use Windows Desktop, install the closed-source 
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) making sure you
 comply with the [Docker Desktop license](https://docs.docker.com/subscription/desktop-license/).
 
-On Windows you also need to first install [Windows System for Linux v2](https://learn.microsoft.com/en-us/windows/wsl/about)
-which in turn requires
-[Microsoft Hyper V](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/hyper-v-technology-overview)
-to be enabled. We do not support deployments on Windows server, in part because as of January 2022
-Microsoft discontinued the free Hyper V Server product line, and we do not know anything about
-alternative Windows virtualisation systems available for purchase. Spyderisk is not designed for
-this sort of server deployment.
+One of the [Chrome](https://www.google.com/chrome/),
+[Chromium](https://www.chromium.org/Home/) or
+[Firefox](https://www.mozilla.org/firefox/) browsers. We have done the most
+testing to date with Chrome and that is probably the best-supported, but to the
+best of our knowledge Chromium works just as well. We strongly prefer working
+promoting open source first, and our browser testing and preferences in future
+are likely to reflect that.
 
-As to Windows desktop operating systems, only Windows 10 or Windows 11 are supported.
+On Windows Desktop you also need to first install
+[Windows System for Linux v2](https://learn.microsoft.com/en-us/windows/wsl/about)
+which in turn requires enabling
+[Microsoft Hyper V](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/hyper-v-technology-overview)
+virtualisation technology.
+
+Only Windows Desktop 10 or Windows Desktop 11 are supported.
 
 ## Deployment
 
