@@ -2,7 +2,13 @@
 
 ## Overview
 
-The purpose of this project is to deploy the [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a server.
+The purpose of this project is to deploy an instance of the open source
+[Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a
+machine you control, typically a server or a laptop. Being an open
+source project, Spyderisk is primarily written for and targeted to Linux/Unix, but
+we have made some efforts to make it work on Windows too.
+
+## Technical overview
 
 The deployment is made with `docker-compose` executed directly on the server
 (or remotely via `docker machine`).
@@ -19,8 +25,8 @@ This project orchestrates:
 
 * [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) (`ssm` container)
 * [System Modeller Adaptor](https://github.com/Spyderisk/system-modeller-adaptor) (`ssm-adaptor` container)
-* MongoDB
-* Keycloak (optional)
+* [MongoDB](https://www.mongodb.com/) database
+* [Keycloak](https://www.keycloak.org/) which is bundled with Spyderisk and must be used, unless you have existing Keycloak installation
 
 Two orchestration definitions are provided:
 
@@ -32,19 +38,31 @@ the docker network is `proxy`.
 
 ## Prerequisites
 
-[Docker](https://www.docker.com/) is required to orchestrate the containers. Docker is available on various host operating systems, but we recommend using some form of Linux. If you want to run the sotware on Windows or Mac, you may use [Docker Desktop](https://www.docker.com/products/docker-desktop/) (with WSL if on Windows) if the licence is appropriate.
+[Docker](https://www.docker.com/) is required to orchestrate the containers.
+Docker is available on various host operating systems, but we recommend using
+some form of Linux. If you want to run the software on Windows or Mac, you may
+use the closed-source [Docker Desktop](https://www.docker.com/products/docker-desktop/) making sure you
+comply with the [Docker Desktop license](https://docs.docker.com/subscription/desktop-license/).
+
+On Windows you also need to first install [Windows System for Linux v2](https://learn.microsoft.com/en-us/windows/wsl/about)
+which in turn requires
+[Microsoft Hyper V](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/hyper-v-technology-overview)
+to be enabled. As of January 2022 Microsoft discontinued the Hyper V Server product line, so
+Windows server users will need to either deploy it only on desktop operating
+systems such as Windows 10 or Windows 11, or buy a different virtualisation
+server system from Microsoft, VMware etc.
 
 ## Deployment
 
 General method:
 
 1. Edit the `.env` file to set appropriate values.
-1. Edit the `.env_adaptor` file to set appropriate values.
+2. Edit the `.env_adaptor` file to set appropriate values.
 3. Download a [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
    e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
-2. Run `docker-compose pull` to get the latest images (otherwise the locally cached
+4. Run `docker-compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they are there).
-4. Run `docker-compose up -d` or `docker-compose -f docker-compose_external_kc.yml up -d` to start the containers.
+5. Run `docker-compose up -d` or `docker-compose -f docker-compose_external_kc.yml up -d` to start the containers.
 
 See below for details.
 
@@ -179,7 +197,9 @@ not know about the made up FQDN.
 
 ### Deployment on a Personal Machine
 
-The software is designed to be deployed on a server which has an externally accessible domain name. It can be made to work on a personal machine but some extra configuration is required.
+The software is designed to be deployed on a server which has an externally
+accessible domain name. It can be made to work on a personal machine but some
+extra configuration is required.
 
 The Spyderisk software must be configured so that there is a single URL used to
 access Keycloak. The `docker-compose.yml` file sets the address to be
