@@ -4,14 +4,47 @@
 
 The purpose of this project is to deploy an instance of the open source
 [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a
-machine you control, typically a server or a laptop. Being an open
-source project, Spyderisk is primarily written for and targeted to Linux/Unix, but
-we have made some efforts to make it work on Windows too.
+machine you control, typically a server or a laptop. Being an open source
+project, Spyderisk is primarily written for and targeted to Linux/Unix, but we
+have made some efforts to make it work on Windows too.  As of 2023, Spyderisk
+is of course generally available but only works in very specific circumstances. 
+
+The scenarios we explicitly support in this document for installing Spyderisk are:
+
+* On a Linux server, as an online service for use by multiple people
+* On a Linux server, with multiple instances on multiple ports, each of which can be used by multiple people
+* On a Linux laptop, for use by one person. This is quite similar to the Linux server case
+* On a Windows laptop, for use by one person
+* On a test Linux server, which does not have access to the internet or a fully-qualified domain name
+
+We explicitly do not expect Spyderisk will work in any of the following scenarios:
+
+* *Mac*. We have not tried installing Spyderisk on any Mac. 
+* *Windows Server*. There are many reasons, including Microsoft decisions
+  about licensing (see below), but mostly we produce risk assessment software and so
+  we would not encourage people to run a Linux server on the internet under Windows
+  Subsystem for Linux. Microsoft doesn't do it and neither should you.
+* *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
+  any desire we have to limit our users' choices.
+
+We will thoughtfully consider all contributions from those who wish to expand
+the list of supported scenarios.
+
+## Required knowledge
+
+You will need to understand how to install and configure Docker. 
+
+We do not recommend anyone install a service live on the internet unless they are
+confident in security measures around domain names, IP networking and routing,
+and virtualisation.
+
+There is a lower level of knowledge required to install on a laptop, assuming
+the laptop is protected by its own firewall, and that docker is set up to
+disallow access from outside the laptop.
 
 ## Technical overview
 
-The deployment is made with `docker-compose` executed directly on the server
-(or remotely via `docker machine`).
+The deployment is made with `docker-compose` executed on the server or laptop.
 
 This project orchestrates:
 
@@ -58,10 +91,10 @@ General method:
 
 1. Edit the `.env` file to set appropriate values.
 2. Edit the `.env_adaptor` file to set appropriate values.
-3. Download a [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
+3. Download a Spyderisk [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
    e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
 4. Run `docker-compose pull` to get the latest images (otherwise the locally cached
-   ones are used, if they are there).
+   ones are used, if they exist).
 5. Run `docker-compose up -d` or `docker-compose -f docker-compose_external_kc.yml up -d` to start the containers.
 
 See below for details.
@@ -106,7 +139,7 @@ When configuring an external Keycloak, the suggested configuration is:
     * other: user
     * defaults: offline_access, uma_authorization, default-roles-ssm-realm
 
-### Deployment on a Server
+### Deployment on a Linux Server
 
 Edit `.env` and update `SERVICE_PROTOCOL`, `SERVICE_DOMAIN`, and `SERVICE_PORT`
 values to your organisation's settings.
@@ -123,7 +156,7 @@ or to connect to an insecure local Keycloak:
 sudo -E docker-compose up -d
 ```
 
-#### Multiple Deployments on the same Server
+#### Multiple Deployments on the same Linux Server
 
 Multiple deployments of the dockerised Spyderisk System Modeller can co-exist on the same server.
 Each deployment requires its own folder, and adjusted PORT settings.
@@ -145,7 +178,7 @@ FQDN and make it so that both the SSM container and the client web browser both
 (a) resolve to the docker host server when looking up the FQDN and (b) can
 access the server on the appropriate port.
 
-For example, if the host server is `fiab.spdns.org` and we are using the
+For example, if the host server is `fiab.altostrat.com` and we are using the
 default public-facing port for the SSM of 8089, then to route from the web
 browser (client machine) to the server:
 
@@ -157,10 +190,10 @@ browser (client machine) to the server:
    ``` 127.0.0.1   example.com ```
 3. From the local (client) host, make an SSH tunnel from the local
    `localhost:8089` to `localhost:8089` on the server (in this example, the
-   host machine is `fiab.spdns.org` and the SSH port is a non-standard `17248`):
+   host machine is `fiab.altostrat.com` and the SSH port is a non-standard `17248`):
 
 ```sh
-ssh -nNT -L 8089:localhost:8089 username@fiab.spdns.org:17248 -v
+ssh -nNT -L 8089:localhost:8089 username@fiab.altostrat.com:17248 -v
 ```
 
 This way, when the URL `http://example.com:8089/whatever` is put into the
@@ -195,11 +228,11 @@ and then to Keycloak. Without this the SSM container will try to use the
 `resolv.conf` file from the docker host which passes on to some DNS which does
 not know about the made up FQDN.
 
-### Deployment on a Personal Machine
+### Deployment on a Personal Machine, both Linux and Windows
 
 The software is designed to be deployed on a server which has an externally
 accessible domain name. It can be made to work on a personal machine but some
-extra configuration is required.
+extra configuration is required, and this is not our highest testing priority.
 
 The Spyderisk software must be configured so that there is a single URL used to
 access Keycloak. The `docker-compose.yml` file sets the address to be
