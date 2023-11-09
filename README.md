@@ -80,10 +80,12 @@ comply with the [Docker Desktop license](https://docs.docker.com/subscription/de
 On Windows you also need to first install [Windows System for Linux v2](https://learn.microsoft.com/en-us/windows/wsl/about)
 which in turn requires
 [Microsoft Hyper V](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/hyper-v-technology-overview)
-to be enabled. As of January 2022 Microsoft discontinued the Hyper V Server product line, so
-Windows server users will need to either deploy it only on desktop operating
-systems such as Windows 10 or Windows 11, or buy a different virtualisation
-server system from Microsoft, VMware etc.
+to be enabled. We do not support deployments on Windows server, in part because as of January 2022
+Microsoft discontinued the free Hyper V Server product line, and we do not know anything about
+alternative Windows virtualisation systems available for purchase. Spyderisk is not designed for
+this sort of server deployment.
+
+As to Windows desktop operating systems, only Windows 10 or Windows 11 are supported.
 
 ## Deployment
 
