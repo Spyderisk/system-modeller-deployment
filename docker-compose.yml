@@ -46,6 +46,8 @@ services:
       KNOWLEDGEBASES_SOURCE_FOLDER: /knowledgebases
       # Knowledgebases installation location (must match knowledgebases volume defined below)
       KNOWLEDGEBASES_INSTALL_FOLDER: /opt/spyderisk/knowledgebases
+      DISPLAY_EULA: ${DISPLAY_EULA:-true}
+      EULA_HTML: ${EULA_HTML}
     volumes:
       # Persistent named volume for the jena-tdb storage
       - type: volume
