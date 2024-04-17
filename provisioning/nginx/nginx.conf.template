@@ -58,7 +58,6 @@ http {
             client_max_body_size 100M;
             proxy_pass http://ssm:8080/system-modeller/;
         }
-
         location = /auth {
             rewrite ^(.*)$ $scheme://$http_host$1/ redirect;
         }

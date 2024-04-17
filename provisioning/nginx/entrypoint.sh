@@ -10,7 +10,7 @@
 # `nginx.conf.template` to `nginx.conf` Then the `nginx` command is run the
 # nginx service.
 
-envsubst '$${scheme} $${server_port} $${kc_proxy_pass} $${documentation_url}' < \
+envsubst '$${scheme} $${server_port} $${kc_proxy_pass} $${documentation_url} $${realm_name}' < \
     /tmp/import/nginx.conf.template > /etc/nginx/nginx.conf
 
 nginx -g 'daemon off;'
