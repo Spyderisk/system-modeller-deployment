@@ -24,7 +24,7 @@ services:
     depends_on:
       - ssm
       - adaptor
-    entrypoint: /tmp/import/entrypoint.sh
+    entrypoint: /tmp/import/entrypoint_no_kc.sh
     volumes:
       - type: bind
         source: ./provisioning/nginx

@@ -58,13 +58,25 @@ http {
             client_max_body_size 100M;
             proxy_pass http://ssm:8080/system-modeller/;
         }
+        # see issue #157 
+	    location = /auth/realms/ssm-realm/account/ {
+	        rewrite ^.*$ $kc_proxy_pass/realms/$realm_name/account/ redirect;
+        }
+	    location = /auth/admin/ssm-realm/console/ {
+	        rewrite ^.*$ $kc_proxy_pass/admin/$realm_name/console/ redirect;
+        }
+        location = /auth {
+            rewrite ^(.*)$ $scheme://$http_host$1/ redirect;
+        }
+        location /auth/ {
+            proxy_pass $kc_proxy_pass/;
+        }
 
         location = /documentation {
             rewrite ^(.*)$ $scheme://$http_host$1/ redirect;
         }
         location /documentation/ {
-            #root /usr/share/nginx/;
-            proxy_pass http://spyderisk.org/documentation/modeller/latest/;
+            rewrite ^/documentation/(.*) $documentation_url$1 redirect;
         }
 
         location /documentation/redirect/ {
@@ -72,7 +84,7 @@ http {
             # These are special addresses embedded in the SSM where we want to decouple the documentation identifier in the SSM 
             # from the actual place in the documentation that should be accessed.
             # Right now, all locations defined in the SSM need to redirect to a heading in the Reference Guide so this is easy.
-            rewrite ^/documentation/redirect/(.*) $scheme://$http_host/documentation/Reference%20Guide/#$1 redirect;
+            rewrite ^/documentation/redirect/(.*) $documentation_url/Reference%20Guide/#$1 redirect;
         }
     }
 }
