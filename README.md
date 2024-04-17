@@ -127,6 +127,7 @@ To use an external Keycloak service, edit the `.env` file and update:
 
 * `EXTERNAL_KEYCLOAK_AUTH_SERVER_URL`
 * `KEYCLOAK_CREDENTIALS_SECRET`
+* `KEYCLOAK_REALM` (optional)
 
 When configuring an external Keycloak, the suggested configuration is:
 
