@@ -113,11 +113,6 @@ services:
       - smd_net
     depends_on:
       - mongo
-    volumes:
-      - type: bind
-        source: ./openvas
-        target: /code/tmp
-    #user: "${UID}:${GID}"
 
 networks:
   smd_net:
