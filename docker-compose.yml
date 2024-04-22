@@ -1,6 +1,3 @@
-# This file provides the base orchestration.
-# The `docker-compose up` command will read this and automatically overlay the contents of the `docker-compose.override.yml` file.
-
 version: '3.7'
 
 services:
@@ -14,8 +11,9 @@ services:
     environment:
       scheme: ${SERVICE_PROTOCOL}
       server_port: ${SERVICE_PORT}
-      kc_proxy_pass: '${EXTERNAL_KEYCLOAK_AUTH_SERVER_URL:-http://keycloak:8080/auth}'
       documentation_url: ${DOCUMENTATION_URL}
+      keycloak_url: '${EXTERNAL_KEYCLOAK_AUTH_SERVER_URL:-http://keycloak:8080/auth}'
+      realm_name: '${KEYCLOAK_REALM:-ssm-realm}'
     # When nginx starts it does a health check on the "upstream" servers and if none of them in a group are present it will fail.
     # Hence, nginx must start after the ssm and keycloak.
     # See https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-health-check/
@@ -42,6 +40,8 @@ services:
       # The KEYCLOAK URL must be the external address of the service + "/auth/"
       KEYCLOAK_AUTH_SERVER_URL: ${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/
       KEYCLOAK_CREDENTIALS_SECRET: ${KEYCLOAK_CREDENTIALS_SECRET}
+      KEYCLOAK_REALM: "${KEYCLOAK_REALM:-ssm-realm}"
+      KEYCLOAK_RESOURCE: "${KEYCLOAK_RESOURCE:-system-modeller}"
       # Knowledgebases source location (must match volume defined below)
       KNOWLEDGEBASES_SOURCE_FOLDER: /knowledgebases
       # Knowledgebases installation location (must match knowledgebases volume defined below)
