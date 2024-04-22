@@ -375,62 +375,54 @@ Stopping system-modeller-deployment_adaptor    ... done
    change "dev" to "master" or change a tagged version).
 5. Bring the system back up again: `docker-compose up -d`
 
-
 ## Backing up Restoring Spyderisk Deployment Contents
 
 It is possible to back up the contents of an existing Spyderisk deployment
-initiated with docker-compose up -d. A utility `bash` shell script located in
-the utils directory facilitates this process.
-
+initiated with `docker-compose up -d`. A utility `bash` shell script located in
+the `utils` directory facilitates this process.
 
 ### What Can Be Backed Up?
 
-The backup script is capable of preserving the following data:
+The backup script preserves the following data:
 
-- MongoDB: Includes all users' models stored in the MongoDB database.
-- Keycloak: Backs up the *ssm-realm*, including all user accounts.
-
+* JenaTDB: Most of the Spyderisk system modeller state, including the users' models
+* Knowledgebases: The unpacked knowledgebases in use by the SSM
+* MongoDB: Includes primarily meta-data about the users' models
+* Keycloak: Backs up the *ssm-realm*, including all user accounts
 
 ### Important Note
 
 The SSM container is stopped during both the backup and restore operations. The
 container is restarted at the end of these processes.
 
-
 ### Common Use Cases
 
 This backup functionality is particularly useful in scenarios such as:
 
-- Upgrading: When you need to backup and restore Spyderisk contents to a newer
+* Upgrading: When you need to backup and restore Spyderisk contents to a newer
   version of the software.
-- Migration: If you're moving an existing Spyderisk deployment to another host.
+* Migration: If you're moving an existing Spyderisk deployment to another host.
   Simply deploy Spyderisk on the new host, transfer the backup folder, and
   execute the restore operation.
-
 
 ### Performing a Backup
 
 To create a backup, run the following command from the root of your project
 directory:
 
-```
+```sh
 ./utils/backup_spyderisk.sh backup
 ```
 
 Upon completion, a new folder named in the format backup_YY-mm-DD_HH-MM will be
 generated, containing all the backed-up data.
 
-
 ### Restoring from a Backup
 
 To restore Spyderisk from a previously created backup, use the following command:
 
-```
+```sh
 ./utils/backup_spyderisk.sh restore -b <backup_folder_name>
 ```
 
-Replace <backup_folder_name> with the actual name of your backup folder.
-
-
-
-
+Replace `<backup_folder_name>` with the actual name of your backup folder.
