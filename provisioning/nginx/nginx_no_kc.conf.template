@@ -58,18 +58,19 @@ http {
             client_max_body_size 100M;
             proxy_pass http://ssm:8080/system-modeller/;
         }
-        # see issue #157 
+        # see issue https://github.com/Spyderisk/system-modeller/issues/157
 	    location = /auth/realms/ssm-realm/account/ {
-	        rewrite ^.*$ $kc_proxy_pass/realms/$realm_name/account/ redirect;
+	        rewrite ^.*$ $keycloak_url/realms/$realm_name/account/ redirect;
         }
+        # see issue https://github.com/Spyderisk/system-modeller/issues/157
 	    location = /auth/admin/ssm-realm/console/ {
-	        rewrite ^.*$ $kc_proxy_pass/admin/$realm_name/console/ redirect;
+	        rewrite ^.*$ $keycloak_url/admin/$realm_name/console/ redirect;
         }
         location = /auth {
             rewrite ^(.*)$ $scheme://$http_host$1/ redirect;
         }
         location /auth/ {
-            proxy_pass $kc_proxy_pass/;
+            proxy_pass $keycloak_url/;
         }
 
         location = /documentation {

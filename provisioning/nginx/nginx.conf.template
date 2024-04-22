@@ -62,7 +62,7 @@ http {
             rewrite ^(.*)$ $scheme://$http_host$1/ redirect;
         }
         location /auth/ {
-            proxy_pass $kc_proxy_pass/;
+            proxy_pass $keycloak_url/;
         }
 
         location = /documentation {
