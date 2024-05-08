@@ -4,11 +4,11 @@
 
 This project contains scripts and configuration files deploy an instance of the
 open source [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a machine you
-control, typically a server or a laptop. As of the end of 2023, Spyderisk is
-fully available but only works in very specific circumstances. This README file
-documents how to do a Spyderisk deployment in those few circumstances. We are 
-pretty proud of our efforts to bring 12 years of academic research out into the 
-open and we expect it to get increasingly easy to install and run.
+control.
+
+Spyderisk is fully available but only works in very specific circumstances.
+This README file documents how to deploy Spyderisk in those few circumstances.
+We expect Spyderisk to become increasingly easy to install and run.
 
 Being an open source project which promotes transparency at all levels,
 Spyderisk is primarily written for and targeted to Linux/Unix. We have made
@@ -27,8 +27,8 @@ We explicitly do not expect Spyderisk will work in any of the following scenario
 
 * *Mac*. We have not tried installing Spyderisk on any Mac. 
 * *Windows Server*. There are many reasons, including Microsoft's decision to discontinue 
-  the free Hyper V Server product line in January 2022. In addition, Spyderisk is cybersecurity
-  risk assessment, and from our knowledge we do not encourage anyone to run a Linux server on the internet
+  the free Hyper V Server product line in January 2022. In addition, Spyderisk was developed for cybersecurity
+  risk assessment, and we do not believe it is safe a Linux server on the internet
   under the Windows Subsystem for Linux. Microsoft does not do it and neither should you.
 * *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
   any desire we have to limit our users' choices.
@@ -427,3 +427,4 @@ To restore Spyderisk from a previously created backup, use the following command
 ```
 
 Replace `<backup_folder_name>` with the actual name of your backup folder.
+
