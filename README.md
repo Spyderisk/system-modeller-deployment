@@ -1,19 +1,18 @@
-# Spyderisk System Modeller Deployment Project
+# Spyderisk System Modeller Deployment tree
 
 ## Overview
 
-This project contains scripts and configuration files deploy an instance of the
+This project contains scripts and configuration files to deploy an instance of the
 open source [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a machine you
-control.
+control. See the system-modeller project for all other information about Spyderisk.
 
 Spyderisk is fully available but only works in very specific circumstances.
 This README file documents how to deploy Spyderisk in those few circumstances.
 We expect Spyderisk to become increasingly easy to install and run.
 
-Being an open source project which promotes transparency at all levels,
-Spyderisk is primarily written for and targeted to Linux/Unix. We have made
-some efforts to make it work on Windows too, and within strict limits we do
-support Windows users.
+Spyderisk is open source, therefore it is primarily written for and targeted to
+Linux/Unix. We have made some efforts to make it work on Windows too, and
+within strict limits we do support Windows users.
 
 The scenarios we explicitly support in this document for installing Spyderisk are:
 
@@ -23,7 +22,7 @@ The scenarios we explicitly support in this document for installing Spyderisk ar
 * On a Windows laptop, for use by one person
 * On a test Linux server, which does not have access to the internet or a fully-qualified domain name
 
-We explicitly do not expect Spyderisk will work in any of the following scenarios:
+We explicitly do *not* support Spyderisk in any of the following scenarios:
 
 * *Mac*. We have not tried installing Spyderisk on any Mac. 
 * *Windows Server*. There are many reasons, including Microsoft's decision to discontinue 
@@ -33,7 +32,7 @@ We explicitly do not expect Spyderisk will work in any of the following scenario
 * *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
   any desire we have to limit our users' choices.
 
-We will thoughtfully consider all contributions from those who wish to expand
+We will thoughtfully consider contributions from those who wish to expand
 the list of supported scenarios.
 
 ## Required knowledge
