@@ -1,4 +1,4 @@
-# List of Spyderisk contributors
+# List of Spyderisk Deployment project contributors
 
 "Contributors" refers to individual people whose work appears in Spyderisk. There are
 two kinds of individual contributors:
@@ -22,3 +22,9 @@ then please [do get in touch](mailto://team@spyderisk.org).
 * Panos Melas <pm@it-innovation.soton.ac.uk>
 * Stephen C. Phillips <scp@it-innovation.soton.ac.uk>
 * Dan Shearer <dan@shearer.org> on GitHub (also <dan.shearer@soton.ac.uk> )
+
+# Spyderisk alumni (who are not licensors)
+
+We thank you all for your work and look forward to seeing you around.
+
+(none yet)
