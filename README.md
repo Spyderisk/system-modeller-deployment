@@ -1,14 +1,18 @@
-# Spyderisk System Modeller Deployment tree
+# Spyderisk System Modeller Deployment project
 
-## Overview
+The software tools created by the [Spyderisk Open Project](https://github.com/Spyderisk)
+only works in very specific circumstances.  This project exists to make it easier for you to get Spyderisk
+running in those few circumstances.
 
-This project contains scripts and configuration files to deploy an instance of the
+Here you will find instructions, scripts and configuration files to deploy an instance of the
 open source [Spyderisk System Modeller](https://github.com/Spyderisk/system-modeller) on a machine you
-control. See the system-modeller project for all other information about Spyderisk.
+control. The System Modeller project repository has a lot more information about Spyderisk including 
+academic reports and papers, plus of course the computer source code that this Deployment project
+will get running on your system.
 
-Spyderisk is fully available but only works in very specific circumstances.
-This README file documents how to deploy Spyderisk in those few circumstances.
-We expect Spyderisk to become increasingly easy to install and run.
+We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to be done.
+
+# Where will Spyderisk run?
 
 Spyderisk is open source, therefore it is primarily written for and targeted to
 Linux/Unix. We have made some efforts to make it work on Windows too, and
@@ -32,9 +36,6 @@ We explicitly do *not* support Spyderisk in any of the following scenarios:
 * *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
   any desire we have to limit our users' choices.
 
-We will thoughtfully consider contributions from those who wish to expand
-the list of supported scenarios.
-
 ## Required knowledge
 
 You will need to understand how to install and configure Docker, and you need to
@@ -52,7 +53,7 @@ disallow access from outside the laptop.
 
 The deployment is made with `docker-compose` executed on the server or laptop.
 
-This project orchestrates:
+This project orchestrates the following Docker containers:
 
 * A reverse proxy (in the `proxy` container) which configures the following
   endpoints:
