@@ -19,13 +19,12 @@ Source](https://opensource.org/osd) licenses, either the [Apache2
 license](licenses/LICENSE-2.0.txt) as described above, or occasionally other licenses which are
 compatible with Apache2. 
 
-We use two standards to maintain copyright and licensing of all artefacts in the Spyderisk project:
+We use the [SPDX software component descriptors](https://spdx.dev/), which is a
+Software Bill of Materials (SBOM) system. These are just a particular format for
+headers of source files, and a template is given in the [LICENCES directory](./LICENSES/README.md).
 
-* The [REUSE](https://reuse.software/spec/) high-level system of files and directories regarding licensing
-* The [SPDX software component descriptors](https://spdx.dev/), which are Software Bill of Materials (SBOM) system
-
-Both of these standards can be read by humans and machines, so Spyderisk is
-compatible with various automated due diligence systems.
+Spyderisk documentation is generally under a Creative Commons license, again
+explained in detail in [LICENSES](LICENSES/README.md).
 
 # Licensor or Contributor?
 
@@ -34,28 +33,6 @@ acknowledge the work done by many people over the years. Only someone who owns
 code has the right to license that code. Many substantial Spyderisk
 contributors commit their work but do not own their contributions, and
 therefore they cannot be a licensor.
-
-Spyderisk licensing is explained by its history:
-
-* In 2023, when all source code was open sourced, the University of Southampton (Soton) was the main copyright licensor
-* There were many individual code contributors employed by Soton who were and remain Spyderisk authors, but all of their work in Spyderisk while being Soton employees is owned by Soton. These authors (called "contributors" to avoid confusion) are therefore not copyright licensors
-* A small proportion of the Spyderisk code has been incorporated from other open source projects, and remains copyrighted by its respective owners/licensors
-* Any future contributors to Spyderisk who are not Soton employees will own their contributions, and so they will be both authors and owners/licensors
-* Some future contributors may be in a similar situation to Soton employees, and their employer will own all their Spyderisk contributons. We would respectfully request that contributors check with their employer to see if they have the right to contribute individually, because we think that is better for the project overall.
-
-There is much more detail in the detailed [HISTORY file](./HISTORY.md).
-
-Many Spyderisk source files simply state "Copyright the Spyderisk licensors" at
-the top in the manner specified by the SPDX standard, where the
-owners/licensors are listed in the [LICENSORS file](./LICENSORS.md). This is
-usually followed by the statement "Original by A. Person", where "A. Person" is
-listed in the [CONTRIBUTORS file](./CONTRIBUTORS.md) regardless of whether or
-not they have any copyright ownership. CONTRIBUTORS should contain a list of
-all known code contributors, while LICENSORS will be a much shorter list of
-copyright owners.
-
-Spyderisk documentation is generally under a Creative Commons license, again
-explained in detail in ```licenses/README.md```.
 
 # No CLA
 
