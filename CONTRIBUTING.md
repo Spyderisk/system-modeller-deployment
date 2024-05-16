@@ -62,6 +62,14 @@ But basically just talk to us using whatever means you are comfortable with, and
 
 ## Transparency trumps accuracy
 
-Spyderisk needs to be both trustable and also to progress quickly. Where there is incomplete or inaccurate work in Spyderisk Deployment code then:
-* we document this with the string "WIP: BRIEF TEXT DESCRIPTION, https://github.com/Spyderisk/system-modeller-deployment/issues/NNN". Where "BRIEF TEXT DESCRIPTION" should not exceed a couple of sentences, and NNN should be the most relevant issue.
+Spyderisk needs to be both trustable and also to progress quickly. Where there
+is incomplete or inaccurate work in the Spyderisk deployment code then we document
+this with the string:
+
+```
+WIP: BRIEF TEXT DESCRIPTION, https://github.com/Spyderisk/system-modeller-deployment/issues/NNN
+```
+
+Where "BRIEF TEXT DESCRIPTION" should not exceed a couple of sentences, and NNN
+should be the most relevant issue.
 

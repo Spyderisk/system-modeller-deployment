@@ -15,7 +15,7 @@ we couldn't use that third-party code!)
 We currently use these licenses in Spyderisk Deployment:
 
 * *[Apache 2](./APACHE-2.0.txt)* for nearly all code, including all code created specifically for Spyderisk
-* *[Creative Commons By-SA 4.0](./CREATIVE-COMMONS-BY-SA-4.0.txt)* for all new documentation, and eventually all documentation will be copyright CC By SA unless it was created by someone 
+* *[Creative Commons By-SA 4.0](./CREATIVE-COMMONS-BY-SA-4.0.txt)* for all new documentation, and eventually all documentation will be copyright CC By SA unless it was created by someone else under a different compatible license
 
 Spyderisk is happy to consider any useful third-party code or
 documentation for inclusion in Spyderisk provided it is under a compatible
@@ -57,11 +57,11 @@ Copyright [YEAR] The Spyderisk Licensors
 
 # Creative Commons BY-SA - documentation and config files
 
-We have decided not to apply copyright headers to README files such as the one you are reading, because
-the REUSE standard already brands every file, and it would just be messy and distracting.
-Similarly we do not add copyright headers to images, we just make a statement in a file 
-covering all the images. However most non-Markdown forms of documentation do have explicit CC BY-SA
-license at the top.
+We have decided not to apply copyright headers to README files such as the one
+you are reading, because other statements cover that.  Similarly we do not add
+copyright headers to images, we just make a statement in a file covering all
+the images. However most non-Markdown forms of documentation do have explicit
+CC BY-SA license at the top.
 
 ```
 Copyright 2023 The Spyderisk Authors
@@ -78,6 +78,8 @@ Copyright 2023 The Spyderisk Authors
 No, because:
 
 * GPLv2 isn't compatible with Apache 2, and
-* other GPL licenses are compatible but for this deployment project its likely more hassle than its work.
+* other GPL licenses are compatible but for this deployment project its likely more hassle than its worth.
 
-This is more relevant to the GPL section in the [Spyderisk source licensing discussion](https://github.com/Spyderisk/system-modeller/blob/dev/LICENSES/README.md), so you can read detailed commentary there.
+This is more relevant to the GPL section in the
+[Spyderisk source licensing discussion](https://github.com/Spyderisk/system-modeller/blob/dev/LICENSES/README.md),
+so you can read detailed commentary there.
