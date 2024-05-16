@@ -15,15 +15,15 @@ We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to 
 # Table of contents
 
 * [Where will Spyderisk run?](#where-will-spyderisk-run)
-    * [Required knowledge](#required-knowledge)
-    * [Technical overview](#technical-overview)
-    * [Prerequisites](#prerequisites)
-    * [Deployment](#deployment)
-        * [Keycloak](#keycloak)
-        * [Deployment on a Linux Server](#deployment-on-a-linux-server)
-            * [Multiple Deployments on the same Linux Server](#multiple-deployments-on-the-same-linux-server)
-            * [Deployment on a Test Server](#deployment-on-a-test-server)
-        * [Deployment on a Personal Machine, both Linux and Windows](#deployment-on-a-personal-machine,-both-linux-and-windows)
+* [Required knowledge](#required-knowledge)
+* [Technical overview](#technical-overview)
+* [Prerequisites](#prerequisites)
+* [Deployment](#deployment)
+    * [Keycloak](#keycloak)
+    * [Deployment on a Linux Server](#deployment-on-a-linux-server)
+        * [Multiple Deployments on the same Linux Server](#multiple-deployments-on-the-same-linux-server)
+        * [Deployment on a Test Server](#deployment-on-a-test-server)
+    * [Deployment on a Personal Machine, both Linux and Windows](#deployment-on-a-personal-machine,-both-linux-and-windows)
     * [Inspecting an Existing Deployment](#inspecting-an-existing-deployment)
         * [Accessing the Logs](#accessing-the-logs)
 * [get the log for all the containers:](#get-the-log-for-all-the-containers)
@@ -32,14 +32,13 @@ We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to 
 * [tail the ssm log but starting from just the last few lines:](#tail-the-ssm-log-but-starting-from-just-the-last-few-lines)
         * [Finding the Spyderisk System Modeller Version](#finding-the-spyderisk-system-modeller-version)
         * [Monitoring Resource Usage](#monitoring-resource-usage)
-    * [Upgrading a Deployment](#upgrading-a-deployment)
-    * [Backing up Restoring Spyderisk Deployment Contents](#backing-up-restoring-spyderisk-deployment-contents)
-        * [What Can Be Backed Up?](#what-can-be-backed-up)
-        * [Important Note](#important-note)
-        * [Common Use Cases](#common-use-cases)
-        * [Performing a Backup](#performing-a-backup)
-        * [Restoring from a Backup](#restoring-from-a-backup)
-
+* [Upgrading a Deployment](#upgrading-a-deployment)
+* [Backing up Restoring Spyderisk Deployment Contents](#backing-up-restoring-spyderisk-deployment-contents)
+    * [What Can Be Backed Up?](#what-can-be-backed-up)
+    * [Important Note](#important-note)
+    * [Common Use Cases](#common-use-cases)
+    * [Performing a Backup](#performing-a-backup)
+    * [Restoring from a Backup](#restoring-from-a-backup)
 
 # Where will Spyderisk run?
 
@@ -65,7 +64,7 @@ We explicitly do *not* support Spyderisk in any of the following scenarios:
 * *Microsoft Edge or Apple Safari browsers*. This is down to our testing capacity, not
   any desire we have to limit our users' choices.
 
-## Required knowledge
+# Required knowledge
 
 You will need to understand how to install and configure Docker, and you need to
 understand what Keycloak does.
@@ -78,7 +77,7 @@ There is a lower level of knowledge required to install on a laptop, assuming
 the laptop is protected by its own firewall, and that docker is set up to
 disallow access from outside the laptop.
 
-## Technical overview
+# Technical overview
 
 The deployment is made with `docker-compose` executed on the server or laptop.
 
@@ -106,7 +105,7 @@ Two orchestration definitions are provided:
 Of the containers, the only one configured to expose any ports outside of
 the docker network is `proxy`.
 
-## Prerequisites
+# Prerequisites
 
 [Docker](https://www.docker.com/) is required to orchestrate the containers.
 Docker is available on various host operating systems, but we recommend using
@@ -132,7 +131,7 @@ virtualisation technology.
 
 Only Windows Desktop 10 or Windows Desktop 11 are supported.
 
-## Deployment
+# Deployment
 
 General method:
 
@@ -146,7 +145,7 @@ General method:
 
 See below for details.
 
-### Keycloak
+## Keycloak
 
 The Spyderisk System Modeller uses Keycloak to authenticate users. The `docker-compose.yml` script will create an insecure Keycloak container for testing, preconfigured with a Keycloak `admin` account, and Spyderisk `testuser` and `testadmin` accounts, all using `password` as the password. For a production system you should configure Spyderisk to connect to a secure external Keycloak service and launch the software using the `docker-compose_external_kc.yml` file.
 
@@ -187,7 +186,7 @@ When configuring an external Keycloak, the suggested configuration is:
     * other: user
     * defaults: offline_access, uma_authorization, default-roles-ssm-realm
 
-### Deployment on a Linux Server
+## Deployment on a Linux Server
 
 Edit `.env` and update `SERVICE_PROTOCOL`, `SERVICE_DOMAIN`, and `SERVICE_PORT`
 values to your organisation's settings.
@@ -204,7 +203,7 @@ or to connect to an insecure local Keycloak:
 sudo -E docker-compose up -d
 ```
 
-#### Multiple Deployments on the same Linux Server
+### Multiple Deployments on the same Linux Server
 
 Multiple deployments of the dockerised Spyderisk System Modeller can co-exist on the same server.
 Each deployment requires its own folder, and adjusted PORT settings.
@@ -218,7 +217,7 @@ Each deployment requires its own folder, and adjusted PORT settings.
 Start the second deployment with or without a secure Keycloak service as described above. The second
 service can be access/proxied from the port defined by PROXY_EXTERNAL_PORT value.
 
-#### Deployment on a Test Server
+### Deployment on a Test Server
 
 Sometimes we need to deploy onto a docker host server which does not have an
 FQDN and where we cannot open a public port. In this case we need to invent an
@@ -276,7 +275,7 @@ and then to Keycloak. Without this the SSM container will try to use the
 `resolv.conf` file from the docker host which passes on to some DNS which does
 not know about the made up FQDN.
 
-### Deployment on a Personal Machine, both Linux and Windows
+## Deployment on a Personal Machine, both Linux and Windows
 
 The software is designed to be deployed on a server which has an externally
 accessible domain name. It can be made to work on a personal machine but some
@@ -377,7 +376,7 @@ To keep monitoring it (like `top`):
 docker ps -q | xargs docker stats
 ```
 
-## Upgrading a Deployment
+# Upgrading a Deployment
 
 It is sometimes possible to upgrade the SSM container in a deployment while
 keeping the user accounts and system models. This will only work if the new SSM
@@ -405,13 +404,13 @@ Stopping system-modeller-deployment_adaptor    ... done
    change "dev" to "master" or change a tagged version).
 5. Bring the system back up again: `docker-compose up -d`
 
-## Backing up Restoring Spyderisk Deployment Contents
+# Backing up Restoring Spyderisk Deployment Contents
 
 It is possible to back up the contents of an existing Spyderisk deployment
 initiated with `docker-compose up -d`. A utility `bash` shell script located in
 the `utils` directory facilitates this process.
 
-### What Can Be Backed Up?
+## What Can Be Backed Up?
 
 The backup script preserves the following data:
 
@@ -420,12 +419,12 @@ The backup script preserves the following data:
 * MongoDB: Includes primarily meta-data about the users' models
 * Keycloak: Backs up the *ssm-realm*, including all user accounts
 
-### Important Note
+## Important Note
 
 The SSM container is stopped during both the backup and restore operations. The
 container is restarted at the end of these processes.
 
-### Common Use Cases
+## Common Use Cases
 
 This backup functionality is particularly useful in scenarios such as:
 
@@ -435,7 +434,7 @@ This backup functionality is particularly useful in scenarios such as:
   Simply deploy Spyderisk on the new host, transfer the backup folder, and
   execute the restore operation.
 
-### Performing a Backup
+## Performing a Backup
 
 To create a backup, run the following command from the root of your project
 directory:
@@ -447,7 +446,7 @@ directory:
 Upon completion, a new folder named in the format backup_YY-mm-DD_HH-MM will be
 generated, containing all the backed-up data.
 
-### Restoring from a Backup
+## Restoring from a Backup
 
 To restore Spyderisk from a previously created backup, use the following command:
 
