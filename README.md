@@ -12,6 +12,35 @@ will get running on your system.
 
 We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to be done.
 
+# Table of contents
+
+* [Where will Spyderisk run?](#where-will-spyderisk-run)
+    * [Required knowledge](#required-knowledge)
+    * [Technical overview](#technical-overview)
+    * [Prerequisites](#prerequisites)
+    * [Deployment](#deployment)
+        * [Keycloak](#keycloak)
+        * [Deployment on a Linux Server](#deployment-on-a-linux-server)
+            * [Multiple Deployments on the same Linux Server](#multiple-deployments-on-the-same-linux-server)
+            * [Deployment on a Test Server](#deployment-on-a-test-server)
+        * [Deployment on a Personal Machine, both Linux and Windows](#deployment-on-a-personal-machine,-both-linux-and-windows)
+    * [Inspecting an Existing Deployment](#inspecting-an-existing-deployment)
+        * [Accessing the Logs](#accessing-the-logs)
+* [get the log for all the containers:](#get-the-log-for-all-the-containers)
+* [get the log for the SSM:](#get-the-log-for-the-ssm)
+* [get the log for the SSM and "follow" the log file to see new entries as they arrive:](#get-the-log-for-the-ssm-and-"follow"-the-log-file-to-see-new-entries-as-they-arrive)
+* [tail the ssm log but starting from just the last few lines:](#tail-the-ssm-log-but-starting-from-just-the-last-few-lines)
+        * [Finding the Spyderisk System Modeller Version](#finding-the-spyderisk-system-modeller-version)
+        * [Monitoring Resource Usage](#monitoring-resource-usage)
+    * [Upgrading a Deployment](#upgrading-a-deployment)
+    * [Backing up Restoring Spyderisk Deployment Contents](#backing-up-restoring-spyderisk-deployment-contents)
+        * [What Can Be Backed Up?](#what-can-be-backed-up)
+        * [Important Note](#important-note)
+        * [Common Use Cases](#common-use-cases)
+        * [Performing a Backup](#performing-a-backup)
+        * [Restoring from a Backup](#restoring-from-a-backup)
+
+
 # Where will Spyderisk run?
 
 Spyderisk is open source, therefore it is primarily written for and targeted to
