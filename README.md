@@ -26,10 +26,6 @@ We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to 
     * [Deployment on a Personal Machine, both Linux and Windows](#deployment-on-a-personal-machine,-both-linux-and-windows)
     * [Inspecting an Existing Deployment](#inspecting-an-existing-deployment)
         * [Accessing the Logs](#accessing-the-logs)
-* [get the log for all the containers:](#get-the-log-for-all-the-containers)
-* [get the log for the SSM:](#get-the-log-for-the-ssm)
-* [get the log for the SSM and "follow" the log file to see new entries as they arrive:](#get-the-log-for-the-ssm-and-"follow"-the-log-file-to-see-new-entries-as-they-arrive)
-* [tail the ssm log but starting from just the last few lines:](#tail-the-ssm-log-but-starting-from-just-the-last-few-lines)
         * [Finding the Spyderisk System Modeller Version](#finding-the-spyderisk-system-modeller-version)
         * [Monitoring Resource Usage](#monitoring-resource-usage)
 * [Upgrading a Deployment](#upgrading-a-deployment)
@@ -39,6 +35,7 @@ We [welcome contributions to this project](./CONTRIBUTING.md). There's a lot to 
     * [Common Use Cases](#common-use-cases)
     * [Performing a Backup](#performing-a-backup)
     * [Restoring from a Backup](#restoring-from-a-backup)
+
 
 # Where will Spyderisk run?
 
@@ -322,13 +319,13 @@ From within a deployment's folder, the `docker logs` command can be used to
 inspect the log files:
 
 ```shell
-# get the log for all the containers:
+#### get the log for all the containers:
 docker-compose logs
-# get the log for the SSM:
+#### get the log for the SSM:
 docker-compose logs ssm
-# get the log for the SSM and "follow" the log file to see new entries as they arrive:
+#### get the log for the SSM and "follow" the log file to see new entries as they arrive:
 docker-compose logs ssm -f
-# tail the ssm log but starting from just the last few lines:
+#### tail the ssm log but starting from just the last few lines:
 docker-compose logs ssm -f --tail=100
 ```
 
