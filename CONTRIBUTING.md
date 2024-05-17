@@ -6,7 +6,10 @@ We'd love to have your contributions to Spyderisk deployment. This document is a
 
 The overall Spyderisk mission is to:
 
-> increase global trust in Information and Communication Technology (ICT) by establishing an international Open Community supporting the research, development, use and support of open, reliable, accessible and inclusive ICT risk assessment methods and tools.
+> understand the trustworthiness of socio-technical systems by establishing an
+> international Open Community supporting the research, development, use and
+> support of open, effective, and accessible risk assessment methods, knowledge
+> and tools.
 
 and you can read more about this in the [general Spyderisk description](https://github.com/Spyderisk/), which explains
 who we are and who Spyderisk is intended for.
@@ -16,7 +19,7 @@ respectful.
 
 # Who can contribute?
 
-This deployment project is about the infrastructure around running Spyderisk. If you know 
+This deployment project is about the infrastructure around running the Spyderisk modeller. If you know 
 about the technologies of Docker, Gradle, Keycloak and nginx then you'll be able to see how the 
 stack is put together and no doubt how to improve it. Plus of course we welcome fixes to the documentation.
 
