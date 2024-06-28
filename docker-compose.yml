@@ -48,6 +48,8 @@ services:
       KNOWLEDGEBASES_INSTALL_FOLDER: /opt/spyderisk/knowledgebases
       DISPLAY_EULA: ${DISPLAY_EULA:-true}
       EULA_HTML: ${EULA_HTML}
+      SPYDERISK_VERSION: ${SPYDERISK_VERSION}
+      SPYDERISK_ADAPTOR_VERSION: ${SPYDERISK_ADAPTOR_VERSION}
     volumes:
       # Persistent named volume for the jena-tdb storage
       - type: volume
