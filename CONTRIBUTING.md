@@ -29,10 +29,10 @@ Do please drop an email or open a discussion issue on GitHub.
 
 # Getting started
 
-The recipes and scripts in this project automate the details of installing Spyderisk as explained in
-the [system modeller README](https://github.com/Spyderisk/system-modeller/blob/dev/README.md)
-explains how to set up the development environment. So as you explore what we have done you'll be able to
-see what needs work.
+The recipes and scripts in this project automate the details of installing Spyderisk. The manual
+version is explained in the [system modeller README](https://github.com/Spyderisk/system-modeller/blob/dev/README.md)
+for the purposes of setting up the development environment. This automated version makes it easier
+for less technical users to install and run Spyderisk. You'll soon find things to fix.
 
 Alternatively you can find an issue from our
 [List of Open Deployment Issues](https://github.com/Spyderisk/system-modeller-deployment/issues),
