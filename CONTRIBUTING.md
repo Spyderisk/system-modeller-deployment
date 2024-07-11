@@ -14,7 +14,7 @@ The overall Spyderisk mission is to:
 and you can read more about this in the [general Spyderisk description](https://github.com/Spyderisk/), which explains
 who we are and who Spyderisk is intended for.
 
-Please read our [Code of Conduct](../CODE-OF-CONDUCT.md) to keep our community approachable and
+Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to keep our community approachable and
 respectful.
 
 # Who can contribute?
