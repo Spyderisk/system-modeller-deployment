@@ -104,9 +104,9 @@ the docker network is `proxy`.
 
 # Prerequisites
 
-[Docker](https://www.docker.com/) is required to orchestrate the containers.
-Docker is available on various host operating systems, but we recommend using
-some form of Linux. For example, on Debian or Ubuntu type `sudo apt install docker`.
+Docker is required for containerisation, and Docker Compose V2 is used to orchestrate the Spyderisk containers. Both tools are available on various host operating systems, but we 
+recommend using some from Linux-based OS. For example, to install Docker and 
+Docker Compose on Debian or Ubuntu, type `sudo apt install docker.io docker-compose-v2`.
 
 If you do use Windows Desktop, install the closed-source 
 [Docker Desktop](https://www.docker.com/products/docker-desktop/) making sure you
