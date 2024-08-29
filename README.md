@@ -76,7 +76,7 @@ disallow access from outside the laptop.
 
 # Technical overview
 
-The deployment is made with `docker-compose` executed on the server or laptop.
+The deployment is made with `docker compose` executed on the server or laptop.
 
 This project orchestrates the following Docker containers:
 
@@ -136,9 +136,9 @@ General method:
 2. Edit the `.env_adaptor` file to set appropriate values.
 3. Download a Spyderisk [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
    e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
-4. Run `docker-compose pull` to get the latest images (otherwise the locally cached
+4. Run `docker compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they exist).
-5. Run `docker-compose up -d` or `docker-compose -f docker-compose_external_kc.yml up -d` to start the containers.
+5. Run `docker compose up -d` or `docker compose -f docker-compose_external_kc.yml up -d` to start the containers.
 
 See below for details.
 
@@ -191,13 +191,13 @@ values to your organisation's settings.
 To start the service and connect to an external Keycloak:
 
 ```sh
-sudo -E docker-compose -f docker-compose_external_kc.yml up -d
+sudo -E docker compose -f docker-compose_external_kc.yml up -d
 ```
 
 or to connect to an insecure local Keycloak:
 
 ```shell
-sudo -E docker-compose up -d
+sudo -E docker compose up -d
 ```
 
 ### Multiple Deployments on the same Linux Server
@@ -209,7 +209,7 @@ Each deployment requires its own folder, and adjusted PORT settings.
 * edit `.env` and use different names values for:
   * update `SERVICE_DOMAIN` to a different name than the first deployment SERVICE_DOMAIN
   * update `PROXY_EXTERNAL_PORT` to a different value than the first deployment PROXY_EXTERNAL_PORT
-* run `docker-compose pull` (optional step to ensure that the latest images are downloaded)
+* run `docker compose pull` (optional step to ensure that the latest images are downloaded)
 
 Start the second deployment with or without a secure Keycloak service as described above. The second
 service can be access/proxied from the port defined by PROXY_EXTERNAL_PORT value.
@@ -297,13 +297,13 @@ An alternative is to manually edit the `hosts` file to add in your own made-up F
 To start the service with the insecure local Keycloak:
 
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 or to connect to an external Keycloak:
 
 ```sh
-docker-compose -f docker-compose_external_kc.yml up -d
+docker compose -f docker-compose_external_kc.yml up -d
 ```
 
 The port exposed to the host machine is by default 8089 but this can be
@@ -320,13 +320,13 @@ inspect the log files:
 
 ```shell
 #### get the log for all the containers:
-docker-compose logs
+docker compose logs
 #### get the log for the SSM:
-docker-compose logs ssm
+docker compose logs ssm
 #### get the log for the SSM and "follow" the log file to see new entries as they arrive:
-docker-compose logs ssm -f
+docker compose logs ssm -f
 #### tail the ssm log but starting from just the last few lines:
-docker-compose logs ssm -f --tail=100
+docker compose logs ssm -f --tail=100
 ```
 
 ### Finding the Spyderisk System Modeller Version
@@ -337,7 +337,7 @@ To discover what version of the SSM an existing deployment is using, the
 From within a deployment's folder, find the names of the containers:
 
 ```shell
-docker-compose ps
+docker compose ps
 
        Name                     Command               State          Ports
 ----------------------------------------------------------------------------------
@@ -383,7 +383,7 @@ software is compatible with the databases of the previous version.
 2. Stop all the containers in the deployment:
 
 ```shell
-$ docker-compose stop
+$ docker compose stop
 Stopping system-modeller-deployment_proxy_1    ... done
 Stopping system-modeller-deployment_ssm_1      ... done
 Stopping system-modeller-deployment_mongo_1    ... done
@@ -395,16 +395,16 @@ Stopping system-modeller-deployment_adaptor    ... done
    step): `docker container rm system-modeller-deployment_ssm_1`
 4. The container is created from an underlying image described in the
    `docker-compose.yml` file. If the name/tag of the new image is the same as
-   the old (for instance if "latest" is being used), then just do `docker-compose
+   the old (for instance if "latest" is being used), then just do `docker compose
    pull` to update the local image registry. Or, you might want to change the
    image reference in `docker-compose.yml` file to a different SSM image (e.g.
    change "dev" to "master" or change a tagged version).
-5. Bring the system back up again: `docker-compose up -d`
+5. Bring the system back up again: `docker compose up -d`
 
 # Backing up Restoring Spyderisk Deployment Contents
 
 It is possible to back up the contents of an existing Spyderisk deployment
-initiated with `docker-compose up -d`. A utility `bash` shell script located in
+initiated with `docker compose up -d`. A utility `bash` shell script located in
 the `utils` directory facilitates this process.
 
 ## What Can Be Backed Up?
