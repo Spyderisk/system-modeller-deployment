@@ -25,7 +25,7 @@
 
 # A Spyderisk tool to make backup and restore Spyderisk deployment contents
 #
-# The script assumes that the deployment has used the default "docker-compose up" method to start.
+# The script assumes that the deployment has used the default "docker compose up" method to start.
 # The SSM container is stopped for both backup and restore operations.
 # At the end of the process, the container is restarted.
 #
@@ -88,7 +88,7 @@ restore_ssm_models() {
 
     # Stop SSM container
     echo "Stopping SSM container..."
-    docker-compose stop ssm
+    docker compose stop ssm
 
     # Check if jena-tdb folder exists inside the backup folder
     if [ -d "${BACKUP_FOLDER}/jena-tdb" ]; then
@@ -111,7 +111,7 @@ restore_ssm_models() {
     fi
 
     echo "Restarting SSM service ..."
-    docker-compose start ssm
+    docker compose start ssm
 }
 
 # Function to backup SSM model data
@@ -123,7 +123,7 @@ backup_ssm_models() {
 
     # Stop SSM container
     echo "Stopping SSM container..."
-    docker-compose stop ssm
+    docker compose stop ssm
 
     # Backup model data from jena-tdb
     docker cp "${SSM_CONTAINER}":/jena-tdb "${BACKUP_FOLDER}"
@@ -134,7 +134,7 @@ backup_ssm_models() {
     echo "SSM knowledgebases data backed up to: ${BACKUP_FOLDER}"
 
     echo "Restarting SSM service ..."
-    docker-compose start ssm
+    docker compose start ssm
 }
 
 # Function to export Keycloak realm data
