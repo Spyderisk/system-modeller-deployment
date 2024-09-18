@@ -30,7 +30,6 @@ services:
 
   ssm:
     image: spyderisk/system-modeller:${SPYDERISK_VERSION}
-    restart: on-failure
     environment:
       # The "SPRING" env variables override the values in application.properties
       # https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config
