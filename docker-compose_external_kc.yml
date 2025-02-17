@@ -46,6 +46,7 @@ services:
       KNOWLEDGEBASE_DOCS_QUERY_URL: ${DOCUMENTATION_URL:-https://docs.spyderisk.org}/knowledgebase/q
       DISPLAY_EULA: ${DISPLAY_EULA:-true}
       EULA_HTML: ${EULA_HTML}
+      SPYDERISK_ADAPTOR_VERSION: ${SPYDERISK_ADAPTOR_VERSION}
     volumes:
       # Persistent named volume for the jena-tdb storage
       - type: volume
