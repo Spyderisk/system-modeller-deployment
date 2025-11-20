@@ -130,6 +130,17 @@ Only Windows Desktop 10 or Windows Desktop 11 are supported.
 
 # Deployment
 
+This branch is specifically designed to provide a Spyderisk deployment with
+reporting functionality.
+
+Before applying any other customization, please complete the following steps in
+ther current directory:
+
+- Check out the **risk-report** repository, e.g.: `git submodule add
+  https://github.com/Spyderisk/risk-report reporting`
+- Download the **domain network package** and unpack the archive inside the
+  `reporting` folder (e.g., `domain-network-132-e5cfa54`).
+
 General method:
 
 1. Edit the `.env` file to set appropriate values.
