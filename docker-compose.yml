@@ -114,6 +114,10 @@ services:
       - smd_net
     depends_on:
       - mongo
+    volumes:
+      - type: volume
+        source: reporting
+        target: /code/reporting
 
 networks:
   smd_net:
