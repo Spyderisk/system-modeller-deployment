@@ -39,201 +39,255 @@
 #set -euo pipefail
 
 # tool version
-VERSION=0.3
+VERSION=0.7.3
 
-# Fixed container names
-SSM_DEPLOYMENT_BASENAME="${PWD##*/}"
-KEYCLOAK_CONTAINER="${SSM_DEPLOYMENT_BASENAME}_keycloak_1"
-MONGO_CONTAINER="${SSM_DEPLOYMENT_BASENAME}_mongo_1"
-SSM_CONTAINER="${SSM_DEPLOYMENT_BASENAME}_ssm_1"
+# check docker compose
+if command -v docker-compose &>/dev/null; then
+    echo "[INFO] docker-compose is available"
+    DOCKER_COMPOSE_CMD="docker-compose"
+    #docker-compose ps -q | xargs docker inspect --format '{{.Name}}' | sed 's/\///'
+elif docker compose version &>/dev/null; then
+    echo "[INFO] docker compose (plugin) is available"
+    DOCKER_COMPOSE_CMD="docker compose"
+    #docker compose ps --format '{{.Name}}'
+else
+    echo "[ERROR] cannot find docker compose"
+    exit 1
+fi
 
-# Default backup folder name format
+# function to get container name based on project and service
+get_container_name() {
+    docker_project=$1
+    service_name=$2
+    docker ps \
+      --filter "label=com.docker.compose.project=${docker_project}" \
+      --filter "label=com.docker.compose.service=${service_name}" \
+      --format '{{.Names}}'
+}
+
+# Extract the relative path as the docker compose project name
+PROJECT_NAME=$(basename "${PWD}")
+echo "Project name: $PROJECT_NAME"
+
+KEYCLOAK_CONTAINER=$(get_container_name $PROJECT_NAME "keycloak")
+MONGO_CONTAINER=$(get_container_name $PROJECT_NAME "mongo")
+SSM_CONTAINER=$(get_container_name $PROJECT_NAME "ssm")
+
+echo "KEYCLOAK container: $KEYCLOAK_CONTAINER"
+echo "MONGO DB container: $MONGO_CONTAINER"
+echo "Spyderisk container: $SSM_CONTAINER"
+
+# default backup folder name format
 DEFAULT_BACKUP_FOLDER="./backup_$(date +%Y-%m-%d_%H-%M)"
 
-# Function to check if a Docker container is running
+#container_name=$(get_container_name myproject web)
+
+# function to check if a docker container is running
 is_container_running() {
     local container_name="$1"
     docker ps -q --filter "name=$container_name" | grep -q .
 }
 
-# Function to check if all required containers are running
-check_containers_status() {
-    if ! is_container_running "$KEYCLOAK_CONTAINER" || \
-       ! is_container_running "$MONGO_CONTAINER" || \
-       ! is_container_running "$SSM_CONTAINER"; then
-        echo "Error: Not all required containers are running."
-        exit 1
-    fi
+# fuction to check if container exists
+container_exists() {
+    docker ps -a --format '{{.Names}}' | grep -wq "$1"
 }
 
-# Function to create the backup folder
+# function to create the backup folder
 create_backup_folder() {
     if [ ! -d "${BACKUP_FOLDER}" ]; then
         mkdir -p "${BACKUP_FOLDER}"
-        echo "Backup folder created: ${BACKUP_FOLDER}"
+        echo "[INFO] Backup folder created: ${BACKUP_FOLDER}"
     else
-        echo "Backup folder already exists: ${BACKUP_FOLDER}"
+        echo "[INFO] Backup folder already exists: ${BACKUP_FOLDER}"
     fi
 }
 
-# Function to export SSM model data
+# function to export SSM model data
 restore_ssm_models() {
-    echo "Restoring SSM models data..."
+    echo "[INFO] Restoring SSM models data..."
 
-    # Check if the backup folder exists
+    if ! is_container_running "$SSM_CONTAINER"; then
+        echo "[WARN] cannot find SSM container, skipping this part"
+        return 1
+    fi
+
+    # check if the backup folder exists
     if [ ! -d "${BACKUP_FOLDER}" ]; then
-        echo "Error: Backup folder does not exist: ${BACKUP_FOLDER}"
+        echo "[ERROR] Backup folder does not exist: ${BACKUP_FOLDER}"
         exit 1
     fi
 
-    # Stop SSM container
-    echo "Stopping SSM container..."
-    docker compose stop ssm
+    # stop SSM container
+    echo "[INFO] Stopping SSM container..."
+    $DOCKER_COMPOSE_CMD stop ssm
 
-    # Check if jena-tdb folder exists inside the backup folder
+    # check if jena-tdb folder exists inside the backup folder
     if [ -d "${BACKUP_FOLDER}/jena-tdb" ]; then
         # Restore model data to jena-tdb
         docker cp "${BACKUP_FOLDER}/jena-tdb" "${SSM_CONTAINER}":/
-        echo "SSM models data restored to: jena-tdb"
+        echo "[INFO] SSM models data restored to: jena-tdb"
     else
-        echo "Warning: jena-tdb folder does not exist inside the backup folder: ${BACKUP_FOLDER}"
-        echo "Skipping restore for SSM models"
+        echo "[WARN] jena-tdb folder does not exist inside the backup folder: ${BACKUP_FOLDER}"
+        echo "[WARN] Skipping restore for SSM models"
     fi
 
-    # Check if knwolegebases folder exists inside the backup folder
+    # check if knwolegebases folder exists inside the backup folder
     if [ -d "${BACKUP_FOLDER}/knowledgebases" ]; then
-        # Restore knowledgebases
-        docker cp "${BACKUP_FOLDER}/knowledgebases" "${SSM_CONTAINER}":/
-        echo "SSM knowledgebases data restored"
+        # restore knowledgebases
+        docker cp "${BACKUP_FOLDER}/knowledgebases" "${SSM_CONTAINER}":/opt/spyderisk/
+        echo "[INFO] SSM knowledgebases data restored"
     else
-        echo "Warning: knowledgebases folder does not exist inside the backup folder: ${BACKUP_FOLDER}"
-        echo "Skipping restore for SSM knowledgebases"
+        echo "[WARN] knowledgebases folder does not exist inside the backup folder: ${BACKUP_FOLDER}"
+        echo "[INFO] Skipping restore for SSM knowledgebases"
     fi
 
-    echo "Restarting SSM service ..."
-    docker compose start ssm
+    if [ -d "${BACKUP_FOLDER}/mnt/knowledgebases" ]; then
+        cp -a "${BACKUP_FOLDER}/mnt/knowledgebases/." ./knowledgebases/
+    fi
+
+    echo "[INFO] Restarting SSM service ..."
+    $DOCKER_COMPOSE_CMD start ssm
 }
 
-# Function to backup SSM model data
+# function to backup SSM model data
 backup_ssm_models() {
-    echo "Backing up SSM models data..."
+    echo "[INFO] Backing up SSM models data..."
 
-    # Create the backup folder
-    create_backup_folder
+    # stop SSM container
+    echo "[INFO] Stopping SSM container..."
+    $DOCKER_COMPOSE_CMD stop ssm
 
-    # Stop SSM container
-    echo "Stopping SSM container..."
-    docker compose stop ssm
-
-    # Backup model data from jena-tdb
+    # backup model data from jena-tdb
     docker cp "${SSM_CONTAINER}":/jena-tdb "${BACKUP_FOLDER}"
-    echo "SSM models data backed up to: ${BACKUP_FOLDER}"
+    echo "[INFO] SSM models data backed up to: ${BACKUP_FOLDER}"
 
-    # Backup knowledgebases data
-    docker cp "${SSM_CONTAINER}":/knowledgebases "${BACKUP_FOLDER}"
-    echo "SSM knowledgebases data backed up to: ${BACKUP_FOLDER}"
+    # backup knowledgebases data
+    docker cp "${SSM_CONTAINER}":/opt/spyderisk/knowledgebases "${BACKUP_FOLDER}"
+    mkdir -p "${BACKUP_FOLDER}/mnt"
+    cp -a knowledgebases "${BACKUP_FOLDER}/mnt"
+    echo "[INFO] SSM knowledgebases data backed up to: ${BACKUP_FOLDER}"
 
-    echo "Restarting SSM service ..."
-    docker compose start ssm
+    echo "[INFO] Restarting SSM service ..."
+    $DOCKER_COMPOSE_CMD start ssm
 }
 
-# Function to export Keycloak realm data
+# function to export Keycloak realm data
 restore_keycloak_realm() {
-    echo "Restoring Keycloak realm data..."
+    if is_container_running $KEYCLOAK_CONTAINER; then
+        echo "[INFO] Restoring Keycloak..."
 
-    # Check if the backup folder exists
-    if [ ! -d "${BACKUP_FOLDER}" ]; then
-        echo "Error: Backup folder does not exist: ${BACKUP_FOLDER}"
-        exit 1
+        # copy realm data to container
+        docker cp "${BACKUP_FOLDER}/ssm-realm.json" "${KEYCLOAK_CONTAINER}":"/tmp/ssm-realm.json"
+        echo "[INFO] Keycloak realm data copied to container"
+
+        # connect to the Keycloak container and execute import command
+        docker exec -it "${KEYCLOAK_CONTAINER}" /bin/bash -c "/opt/keycloak/bin/kc.sh import --override true  --file  /tmp/ssm-realm.json"
+
+        # delete realm backup file from the container
+        docker exec -it "${KEYCLOAK_CONTAINER}" rm /tmp/ssm-realm.json
+        echo "[INFO] Backup file from the container is now removed"
+    else
+        echo "[INFO] Keycloak container not found, skipping restore..."
     fi
-
-    # Check if realm file exists inside the backup folder
-    if [ ! -f "${BACKUP_FOLDER}/ssm-realm.json" ]; then
-        echo "Warning: realm file does not exist inside the backup folder: ${BACKUP_FOLDER}"
-        echo "Skipping restore for keycloak ssm-realm."
-        return
-    fi
-
-    # Copy realm data to container
-    docker cp "${BACKUP_FOLDER}/ssm-realm.json" "${KEYCLOAK_CONTAINER}":"/tmp/ssm-realm.json"
-    echo "Keycloak realm data copied to container"
-
-    # Connect to the Keycloak container and execute import command
-    docker exec -it "${KEYCLOAK_CONTAINER}" /bin/bash -c "/opt/keycloak/bin/kc.sh import --override true  --file  /tmp/ssm-realm.json"
-
-    # Delete realm backup file from the container
-    docker exec -it "${KEYCLOAK_CONTAINER}" rm /tmp/ssm-realm.json
-    echo "Backup file from the container is now removed"
 }
 
-# Function to backup Keycloak realm data
+# function to backup Keycloak realm data
 backup_keycloak_realm() {
-    echo "Backing up Keycloak realm data..."
-
-    # Create the backup folder
-    create_backup_folder
-
-    # Backup exported realm data to the backup folder
-    docker exec -it "${KEYCLOAK_CONTAINER}" /bin/bash -c "/opt/keycloak/bin/kc.sh export --users realm_file --realm ssm-realm --file /tmp/ssm-realm.json"
-    docker cp "${KEYCLOAK_CONTAINER}":"/tmp/ssm-realm.json" "${BACKUP_FOLDER}"
-    echo "Keycloak realm data backed up to: ${BACKUP_FOLDER}"
-
-    # Delete realm backup file from the container
-    docker exec -it "${KEYCLOAK_CONTAINER}" rm /tmp/ssm-realm.json
-    echo "Backup file from the container is now removed"
-}
-
-# Function to export MongoDB databases
-restore_mongo_databases() {
-    echo "Restoring MongoDB databases..."
-
-    # Check if the backup folder exists
-    if [ ! -d "${BACKUP_FOLDER}" ]; then
-        echo "Error: Backup folder does not exist: ${BACKUP_FOLDER}"
-        exit 1
-    fi
-
-    # Check if mongo folder exists inside the backup folder
-    if [ ! -d "${BACKUP_FOLDER}/system-modeller" ]; then
-        echo "Warning: system-modeller folder does not exist inside the backup folder: ${BACKUP_FOLDER}"
-        echo "Skipping restore for MongoDB databases."
+    if [ -z "$KEYCLOAK_CONTAINER" ]; then
+        echo "[INFO] Keycloak container name is empty, skipping backup ..."
         return
     fi
 
-    # Copy db dump data to the container
-    docker cp "${BACKUP_FOLDER}/system-modeller" "${MONGO_CONTAINER}":/tmp/system-modeller
-    echo "MongoDB databases imported to container"
+    if is_container_running $KEYCLOAK_CONTAINER; then
+        echo "[INFO] Backing up keycloak ssm-realm..."
 
-    # Connect to the MongoDB container and dump databases
-    docker exec -it "${MONGO_CONTAINER}" /bin/bash -c "mongorestore --db system-modeller /tmp/system-modeller"
+        # backup exported realm data to the backup folder
+        docker exec -it "${KEYCLOAK_CONTAINER}" /bin/bash -c "/opt/keycloak/bin/kc.sh export --users realm_file --realm ssm-realm --file /tmp/ssm-realm.json"
+        docker cp "${KEYCLOAK_CONTAINER}":"/tmp/ssm-realm.json" "${BACKUP_FOLDER}"
 
-    # Delete backup data from the container
-    docker exec -it "${MONGO_CONTAINER}" rm -rf /tmp/system-modeller
-    echo "Backup files are now removed from the container"
+        # delete realm backup file from the container
+        docker exec -it "${KEYCLOAK_CONTAINER}" rm /tmp/ssm-realm.json
+    else
+        echo "[INFO] Keycloak container not running, skipping backup..."
+    fi
 }
 
-# Function to backup MongoDB databases
+# function to export MongoDB databases
+restore_mongo_databases() {
+    echo "[INFO] Restoring MongoDB databases..."
+
+    # check if the backup folder exists
+    if [ ! -d "${BACKUP_FOLDER}/mongo" ]; then
+        echo "[ERROR] Backup folder does not exist: ${BACKUP_FOLDER}/mongo"
+        return
+    fi
+
+    # list of databases to restore
+    local databases=("system-modeller" "ssmadaptor")
+
+    for db in "${databases[@]}"; do
+
+        # check if mongo folder exists inside the backup folder
+        if [ -d "${BACKUP_FOLDER}/mongo/${db}" ]; then
+            echo "[INFO] Restoring MongoDB database: ${db}"
+
+            # copy db dump data to the container
+            docker cp "${BACKUP_FOLDER}/mongo/${db}" "${MONGO_CONTAINER}":/tmp/${db}
+            echo "[INFO] MongoDB database $db imported to container"
+
+            # connect to the MongoDB container and dump databases
+            docker exec -it "${MONGO_CONTAINER}" sh -c "mongorestore --drop --db ${db} /tmp/${db}"
+
+            if [[ $? -eq 0 ]]; then
+                echo "[INFO] Successfully restored ${db}"
+                docker exec "${MONGO_CONTAINER}" rm -rf "/tmp/${db}"
+                echo "[INFO] Cleaned up temporary restore $db files in container"
+            else
+                echo "[ERROR] Failed to restore ${db}"
+            fi
+        else
+            echo "[WARN] databse folder $db does not exist"
+        fi
+    done
+}
+
+# function to backup MongoDB databases
 backup_mongo_databases() {
-    echo "Backing up MongoDB databases..."
+    echo "[INFO] Backing up MongoDB databases..."
 
-    # Create the backup folder
-    create_backup_folder
+    # list of databases to back up
+    local databases=("system-modeller" "ssmadaptor")
+    mkdir -p "${BACKUP_FOLDER}/mongo"
 
-    # Backup db dump data to the backup folder
-    docker exec -it "${MONGO_CONTAINER}" /bin/bash -c "mongodump --db system-modeller --out /tmp"
-    docker cp "${MONGO_CONTAINER}":/tmp/system-modeller "${BACKUP_FOLDER}"
-    echo "MongoDB databases backed up to: ${BACKUP_FOLDER}"
+    for db in "${databases[@]}"; do
+        echo "[INFO] Backing up MongoDB database: ${db}"
 
-    # Delete backup data from the container
-    docker exec -it "${MONGO_CONTAINER}" rm -rf /tmp/system-modeller
-    echo "Backup files are now removed from the container"
+        # run mongodump inside the container
+        docker exec "${MONGO_CONTAINER}" sh -c "mongodump --db ${db} --out /tmp"
+
+        if docker exec "${MONGO_CONTAINER}" test -e "/tmp/${db}"; then
+            # copy data from the container to the host
+            docker cp "${MONGO_CONTAINER}":/tmp/"${db}" "${BACKUP_FOLDER}/mongo/"
+
+            echo "[INFO] ${db} backed up"
+
+            # clean up temp files inside the container
+            docker exec "${MONGO_CONTAINER}" rm -rf "/tmp/${db}"
+            echo "[INFO] Removed /tmp/${db} from container"
+
+        else
+            echo "[WARN] No dump found for ${db}, skipping copy"
+        fi
+    done
 }
+
 
 echo "============================"
 echo " Spyderisk Backup tool v${VERSION}"
 echo "============================"
 
-# Parse command-line arguments
+# parse command-line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -b|--backup-folder)
@@ -245,27 +299,28 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Invalid argument: $1"
+            echo "Usage: $0 {backup [-b BACKUP_FOLDER]|restore -b BACKUP_FOLDER}"
             exit 1
             ;;
     esac
     shift
 done
 
-# Set default backup folder if not provided
+# set default backup folder if not provided
 if [ -z "${BACKUP_FOLDER}" ]; then
     BACKUP_FOLDER="${DEFAULT_BACKUP_FOLDER}"
 fi
 
-# Check the mode and execute the corresponding functions
+# check the mode and execute the corresponding functions
 case "${MODE}" in
     backup)
-        check_containers_status
+        create_backup_folder
         backup_ssm_models
         backup_keycloak_realm
         backup_mongo_databases
         ;;
     restore)
-        check_containers_status
+        #check_containers_status
         restore_ssm_models
         restore_keycloak_realm
         restore_mongo_databases
