@@ -89,8 +89,8 @@ services:
     depends_on:
       - mongo
     volumes:
-      - type: volume
-        source: reporting
+      - type: bind
+        source: ./reporting
         target: /code/reporting
 
 networks:
