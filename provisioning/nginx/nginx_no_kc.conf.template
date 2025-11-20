@@ -59,11 +59,11 @@ http {
             proxy_pass http://ssm:8080/system-modeller/;
         }
         # see issue https://github.com/Spyderisk/system-modeller/issues/157
-	    location = /auth/realms/ssm-realm/account/ {
+	    location = /auth/account-management/ {
 	        rewrite ^.*$ $keycloak_url/realms/$realm_name/account/ redirect;
         }
         # see issue https://github.com/Spyderisk/system-modeller/issues/157
-	    location = /auth/admin/ssm-realm/console/ {
+	    location = /auth/realm-management/ {
 	        rewrite ^.*$ $keycloak_url/admin/$realm_name/console/ redirect;
         }
         location = /auth {
