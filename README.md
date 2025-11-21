@@ -130,15 +130,12 @@ Only Windows Desktop 10 or Windows Desktop 11 are supported.
 
 # Deployment
 
-This branch is specifically designed to provide a Spyderisk deployment with
-reporting functionality.
-
-Before applying any other customization, please complete the following steps in
-ther current directory:
+Firstly, if you require a Spyderisk deployment with
+reporting functionality, please follow the steps below, prior to the General method, within the current directory (e.g. `system-modeller-deployment`).
 
 - Check out the **risk-report** repository, e.g.: `git submodule add
   https://github.com/Spyderisk/risk-report reporting`
-- Download the **domain network package** and unpack the archive inside the
+- Download the required domain model source code zip file from the [domain-network/releases](https://github.com/Spyderisk/domain-network/releases) page and unpack the archive inside the
   `reporting` folder (e.g., `domain-network-132-e5cfa54`).
 
 General method:
@@ -146,10 +143,12 @@ General method:
 1. Edit the `.env` file to set appropriate values.
 2. Edit the `.env_adaptor` file to set appropriate values.
 3. Download a Spyderisk [knowledgebase](https://github.com/Spyderisk/domain-network/packages/1826148) `zip` file asset.
-   e.g. `domain-network-6a3-2-2.zip` and copy it into the `knowledgebases` folder.
+   e.g. `domain-network-patientharms-b132-e5cfa54-filtered.zip` and copy it into the `knowledgebases` folder.
 4. Run `docker compose pull` to get the latest images (otherwise the locally cached
    ones are used, if they exist).
 5. Run `docker compose up -d` or `docker compose -f docker-compose_external_kc.yml up -d` to start the containers.
+
+**N.B. the domain model source code (i.e. csv files) version used by the reporting tool should match the version of the knowledgebase (domain model) bundle installed in Spyderisk System Modeller.**
 
 See below for details.
 
