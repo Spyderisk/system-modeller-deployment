@@ -38,6 +38,13 @@ http {
         listen 80;
 	absolute_redirect off;
 
+        # Permit only configured thin-client origins to embed System Modeller
+        # and its Keycloak login flow while removing upstream restrictions.
+        proxy_hide_header X-Frame-Options;
+        proxy_hide_header Content-Security-Policy;
+        proxy_hide_header Content-Security-Policy-Report-Only;
+        add_header Content-Security-Policy "frame-ancestors $frame_ancestors" always;
+
         # For each endpoint, we are explicit about how to treat URLs without a trailing slash. Not doing this causes some hidden problems.
         # $scheme and $http_host come from the request URL and are e.g. "https" and "some.domain:port". They are needed to preserve this part of the URL.
 

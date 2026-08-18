@@ -1,0 +1,4 @@
+[submodule "reporting"]
+	path = reporting
+	url = https://github.com/Spyderisk/risk-report.git
+	branch = ds2-sdm

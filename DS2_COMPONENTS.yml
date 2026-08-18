@@ -1,0 +1,38 @@
+release: ds2-sdm
+status: pre-release
+
+components:
+  system_modeller:
+    repository: https://github.com/Spyderisk/system-modeller.git
+    branch: ds2-sdm
+    image: spyderisk/system-modeller:ds2-sdm-latest
+
+  adaptor:
+    repository: https://github.com/Spyderisk/system-modeller-adaptor.git
+    branch: ds2-sdm
+    image: spyderisk/system-modeller-adaptor:ds2-sdm-latest
+
+  reporting:
+    repository: https://github.com/Spyderisk/risk-report.git
+    branch: ds2-sdm
+    path: reporting
+    layout:
+      security: security/risk-report.py
+      compliance: compliance/risk-report.py
+      domain_csv: domain-current/csv
+
+  domain_model:
+    repository: https://github.com/Spyderisk/domain-network.git
+    source_branch: 246-need-a-data-sovereignty-package
+    source_commit: dc721b4
+    source_tag: ds2-2026-08-14
+    knowledgebase: knowledgebases/domain-network-DevMS-b246-filtered.zip
+
+deployment:
+  repository: https://github.com/Spyderisk/system-modeller-deployment.git
+  branch: ds2-sdm
+  compose_file: docker-compose_external_kc.yml
+  environment_template: .env.ds2.example
+
+release_process:
+  note: Replace both branch-latest image references with timestamped image tags after successful GitHub Actions builds.

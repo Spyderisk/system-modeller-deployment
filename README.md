@@ -130,13 +130,17 @@ Only Windows Desktop 10 or Windows Desktop 11 are supported.
 
 # Deployment
 
-Firstly, if you require a Spyderisk deployment with
-reporting functionality, please follow the steps below, prior to the General method, within the current directory (e.g. `system-modeller-deployment`).
+The DS2 branch pins its reporting implementation and matching domain CSV data
+as the `reporting` Git submodule. Clone it with:
 
-- Check out the **risk-report** repository, e.g.: `git submodule add
-  https://github.com/Spyderisk/risk-report reporting`
-- Download the required domain model source code zip file from the [domain-network/releases](https://github.com/Spyderisk/domain-network/releases) page and unpack the archive inside the
-  `reporting` folder (e.g., `domain-network-132-e5cfa54`).
+```sh
+git clone --branch ds2-sdm --recurse-submodules \
+  https://github.com/Spyderisk/system-modeller-deployment.git
+```
+
+For an existing checkout, initialise it with `git submodule update --init`.
+See `DS2_COMPONENTS.yml` and `DS2_SERVER_DEPLOYMENT.md` for the coordinated
+component versions and production sequence.
 
 General method:
 

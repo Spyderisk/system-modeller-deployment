@@ -1,3 +1,5 @@
+version: "2.4"
+
 services:
   proxy:
     image: nginx:stable-alpine3.17
@@ -10,8 +12,9 @@ services:
       scheme: ${SERVICE_PROTOCOL}
       server_port: ${SERVICE_PORT}
       documentation_url: ${DOCUMENTATION_URL}/system-modeller/latest/
-      keycloak_url: '${EXTERNAL_KEYCLOAK_AUTH_SERVER_URL:-http://keycloak:8080/auth}'
-      realm_name: '${KEYCLOAK_REALM:-ssm-realm}'
+      keycloak_url: '${EXTERNAL_KEYCLOAK_AUTH_SERVER_URL}'
+      realm_name: '${KEYCLOAK_REALM}'
+      frame_ancestors: '${FRAME_ANCESTORS}'
     # When nginx starts it does a health check on the "upstream" servers and if none of them in a group are present it will fail.
     # Hence, nginx must start after the ssm and keycloak.
     # See https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-health-check/
@@ -37,14 +40,14 @@ services:
       # The KEYCLOAK URL must be the external address of the service + "/auth/"
       KEYCLOAK_AUTH_SERVER_URL: ${SERVICE_PROTOCOL}://${SERVICE_DOMAIN}:${SERVICE_PORT}/auth/
       KEYCLOAK_CREDENTIALS_SECRET: ${KEYCLOAK_CREDENTIALS_SECRET}
-      KEYCLOAK_REALM: "${KEYCLOAK_REALM:-ssm-realm}"
-      KEYCLOAK_RESOURCE: "${KEYCLOAK_RESOURCE:-system-modeller}"
+      KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+      KEYCLOAK_RESOURCE: "${KEYCLOAK_RESOURCE}"
       # Knowledgebases source location (must match volume defined below)
       KNOWLEDGEBASES_SOURCE_FOLDER: /knowledgebases
       # Knowledgebases installation location (must match knowledgebases volume defined below)
       KNOWLEDGEBASES_INSTALL_FOLDER: /opt/spyderisk/knowledgebases
-      KNOWLEDGEBASE_DOCS_QUERY_URL: ${DOCUMENTATION_URL:-https://docs.spyderisk.org}/knowledgebase/q
-      DISPLAY_EULA: ${DISPLAY_EULA:-true}
+      KNOWLEDGEBASE_DOCS_QUERY_URL: ${DOCUMENTATION_URL}/knowledgebase/q
+      DISPLAY_EULA: ${DISPLAY_EULA}
       EULA_HTML: ${EULA_HTML}
       SPYDERISK_ADAPTOR_VERSION: ${SPYDERISK_ADAPTOR_VERSION}
     volumes:
